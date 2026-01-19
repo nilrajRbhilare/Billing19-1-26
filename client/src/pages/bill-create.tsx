@@ -545,504 +545,506 @@ export default function BillCreate() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 overflow-y-auto invisible-scrollbar">
-      <div className="max-w-6xl mx-auto p-6">
-        <div className="flex items-center gap-3 mb-6">
-          <FileText className="h-6 w-6 text-slate-600" />
-          <h1 className="text-2xl font-semibold text-slate-900" data-testid="text-page-title">New Bill</h1>
-        </div>
-
-        {purchaseOrderId && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4 flex items-center gap-3">
-            <FileText className="h-5 w-5 text-blue-600" />
-            <div>
-              <p className="text-sm font-medium text-blue-800">
-                {loadingPO ? "Loading purchase order data..." : `Creating bill from Purchase Order`}
-              </p>
-              {formData.orderNumber && (
-                <p className="text-xs text-blue-600">PO# {formData.orderNumber}</p>
-              )}
-            </div>
+    <div className="flex-1 flex flex-col bg-slate-50 h-screen">
+      <div className="flex-1 overflow-y-auto invisible-scrollbar">
+        <div className="max-w-6xl mx-auto p-6 pb-24">
+          <div className="flex items-center gap-3 mb-6">
+            <FileText className="h-6 w-6 text-slate-600" />
+            <h1 className="text-2xl font-semibold text-slate-900" data-testid="text-page-title">New Bill</h1>
           </div>
-        )}
 
-        <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
-          <div className="grid gap-6">
-            <div className="grid grid-cols-2 gap-6">
+          {purchaseOrderId && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4 flex items-center gap-3">
+              <FileText className="h-5 w-5 text-blue-600" />
               <div>
-                <Label className="text-black">Vendor Name
-                  <span className="text-red-500">*</span>
-                </Label>
-                <div className="flex gap-2 mt-1">
-                  <Select onValueChange={handleVendorChange} value={formData.vendorId}>
-                    <SelectTrigger className="flex-1" data-testid="select-vendor">
-                      <SelectValue placeholder="Select a Vendor" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <div className="p-2">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Search className="h-4 w-4 text-gray-400" />
-                          <Input
-                            placeholder="Search vendors..."
-                            className="h-8"
-                            value={vendorSearchTerm}
-                            onChange={(e) => setVendorSearchTerm(e.target.value)}
-                          />
-                        </div>
-                      </div>
-                      {filteredVendors.map(vendor => (
-                        <SelectItem key={vendor.id} value={vendor.id}>
-                          {vendor.displayName || `${(vendor as any).firstName} ${(vendor as any).lastName}`.trim() || vendor.companyName}
-                        </SelectItem>
-                      ))}
-                      <div className="border-t mt-1 pt-1">
-                        <SelectItem
-                          value="__add_new_vendor__"
-                          onSelect={() => {
-                            setLocation("/vendors/new");
-                          }}
-                        >
-                          <div className="flex items-center gap-2 text-blue-600">
-                            <Plus className="h-4 w-4" />
-                            Add New Vendor
-                          </div>
-                        </SelectItem>
-                      </div>
-                    </SelectContent>
-                  </Select>
-                  <Button variant="outline" size="icon" onClick={() => setLocation("/vendors/new")} data-testid="button-add-vendor">
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-              <div></div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-6">
-              <div>
-                <Label className="text-black">Bill#
-                  <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  value={formData.billNumber}
-                  onChange={(e) => setFormData(prev => ({ ...prev, billNumber: e.target.value }))}
-                  className="mt-1"
-                  data-testid="input-bill-number"
-                />
-              </div>
-              <div>
-                <Label>Order Number</Label>
-                <Input
-                  value={formData.orderNumber}
-                  onChange={(e) => setFormData(prev => ({ ...prev, orderNumber: e.target.value }))}
-                  className="mt-1"
-                  data-testid="input-order-number"
-                />
+                <p className="text-sm font-medium text-blue-800">
+                  {loadingPO ? "Loading purchase order data..." : `Creating bill from Purchase Order`}
+                </p>
+                {formData.orderNumber && (
+                  <p className="text-xs text-blue-600">PO# {formData.orderNumber}</p>
+                )}
               </div>
             </div>
+          )}
 
-            <div className="grid grid-cols-2 gap-6">
-              <div>
-                <Label className="text-black">Bill Date
-                  <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  type="date"
-                  value={formData.billDate}
-                  onChange={(e) => setFormData(prev => ({ ...prev, billDate: e.target.value }))}
-                  className="mt-1"
-                  data-testid="input-bill-date"
-                />
-              </div>
-              <div className="flex gap-4">
-                <div className="flex-1">
-                  <Label>Due Date</Label>
-                  <Input
-                    type="date"
-                    value={formData.dueDate}
-                    onChange={(e) => setFormData(prev => ({ ...prev, dueDate: e.target.value }))}
-                    className="mt-1"
-                    data-testid="input-due-date"
-                  />
-                </div>
-                <div className="flex-1">
-                  <Label>Payment Terms</Label>
-                  <Select
-                    value={formData.paymentTerms}
-                    onValueChange={(value) => setFormData(prev => ({ ...prev, paymentTerms: value }))}
-                  >
-                    <SelectTrigger className="mt-1" data-testid="select-payment-terms">
-                      <SelectValue placeholder="Select terms" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Due on Receipt">Due on Receipt</SelectItem>
-                      <SelectItem value="Net 15">Net 15</SelectItem>
-                      <SelectItem value="Net 30">Net 30</SelectItem>
-                      <SelectItem value="Net 45">Net 45</SelectItem>
-                      <SelectItem value="Net 60">Net 60</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="reverse-charge"
-                checked={formData.reverseCharge}
-                onCheckedChange={(checked) => setFormData(prev => ({ ...prev, reverseCharge: checked as boolean }))}
-              />
-              <Label htmlFor="reverse-charge" className="text-sm">
-                This transaction is applicable for reverse charge
-              </Label>
-            </div>
-
-            <div>
-              <Label className="flex items-center gap-1">
-                Subject <Info className="h-3 w-3 text-slate-400" />
-              </Label>
-              <Textarea
-                value={formData.subject}
-                onChange={(e) => setFormData(prev => ({ ...prev, subject: e.target.value }))}
-                placeholder="Enter a subject within 250 characters"
-                className="mt-1 resize-none"
-                maxLength={250}
-                data-testid="input-subject"
-              />
-            </div>
-
-            <div className="flex items-center gap-2 text-sm text-slate-500">
-              <span>At Transaction Level</span>
-              <ChevronDown className="h-4 w-4" />
-            </div>
-
-            <div className="border rounded-lg overflow-hidden">
-              <div className="bg-slate-50 px-4 py-2 flex items-center justify-between border-b">
-                <h3 className="font-medium text-slate-700">Item Table</h3>
-                <Button variant="link" size="sm" className="text-blue-600">
-                  Bulk Actions
-                </Button>
-              </div>
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-slate-50">
-                    <TableHead className="w-[200px] text-xs">ITEM DETAILS</TableHead>
-                    <TableHead className="w-[150px] text-xs">ACCOUNT</TableHead>
-                    <TableHead className="w-[100px] text-xs text-center">QUANTITY</TableHead>
-                    <TableHead className="w-[140px] text-xs text-right">RATE (₹)</TableHead>
-                    <TableHead className="w-[120px] text-xs">TAX</TableHead>
-                    <TableHead className="w-[150px] text-xs">CUSTOMER DETAILS</TableHead>
-                    <TableHead className="w-[100px] text-xs text-right">AMOUNT</TableHead>
-                    <TableHead className="w-[50px]"></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {formData.items.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={8} className="text-center py-8 text-slate-500">
-                        No items added yet. Click "Add New Row" to add items.
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    formData.items.map((item) => (
-                      <TableRow key={item.id}>
-                        <TableCell>
-                          <Select
-                            value={item.itemName || ""}
-                            onValueChange={(value) => {
-                              const product = products.find(p => p.name === value);
-                              if (product) {
-                                handleProductSelect(item.id, product.id);
-                              }
-                            }}
-                          >
-                            <SelectTrigger className="text-sm" data-testid={`select-item-${item.id}`}>
-                              <SelectValue placeholder={loadingProducts ? "Loading items..." : "Select an item"} />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {loadingProducts ? (
-                                <SelectItem value="loading" disabled>Loading items...</SelectItem>
-                              ) : products.length === 0 ? (
-                                <SelectItem value="none" disabled>No items available</SelectItem>
-                              ) : (
-                                products.map(product => {
-                                  const displayPrice = parseRateValue(product.purchaseRate) || parseRateValue(product.rate) || product.costPrice || product.sellingPrice || 0;
-                                  return (
-                                    <SelectItem key={product.id} value={product.name}>
-                                      {product.name} {product.usageUnit ? `(${product.usageUnit})` : ''} - ₹{displayPrice.toLocaleString('en-IN')}
-                                    </SelectItem>
-                                  );
-                                })
-                              )}
-                            </SelectContent>
-                          </Select>
-                        </TableCell>
-                        <TableCell>
-                          <AccountSelectDropdown
-                            value={item.account}
-                            onValueChange={(value) => updateItem(item.id, 'account', value)}
-                            placeholder="Select an account"
-                            triggerClassName="text-sm"
-                            testId={`select-account-${item.id}`}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Input
-                            type="number"
-                            value={item.quantity}
-                            onChange={(e) => updateItem(item.id, 'quantity', parseFloat(e.target.value) || 0)}
-
-                            className="text-sm text-center"
-                            min={0}
-                            step={0.01}
-                            data-testid={`input-quantity-${item.id}`}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Input
-                            type="number"
-                            value={item.rate}
-                            onChange={(e) => updateItem(item.id, 'rate', parseFloat(e.target.value) || 0)}
-
-                            className="text-sm text-right"
-                            min={0}
-                            step={0.01}
-                            data-testid={`input-rate-${item.id}`}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Select
-                            value={item.tax || ""}
-                            onValueChange={(value) => updateItem(item.id, 'tax', value)}
-                          >
-                            <SelectTrigger className="text-sm" data-testid={`select-tax-${item.id}`}>
-                              <SelectValue placeholder="Select a Tax" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="none">No Tax</SelectItem>
-                              {taxes.map(tax => (
-                                <SelectItem key={tax.id} value={tax.name}>
-                                  {tax.name} ({tax.rate}%)
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </TableCell>
-                        <TableCell>
-                          <Select
-                            value={item.customerDetails || "none"}
-                            onValueChange={(value) => {
-                              updateItem(item.id, 'customerDetails', value);
-                            }}
-                          >
-                            <SelectTrigger className="text-sm">
-                              <SelectValue placeholder="Select Customer">
-                                {getCustomerDisplayName(item.customerDetails || "none")}
-                              </SelectValue>
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="none">None</SelectItem>
-                              {customers.map(customer => (
-                                <SelectItem key={customer.id} value={customer.id}>
-                                  {customer.displayName || customer.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </TableCell>
-                        <TableCell className="text-right font-medium">
-                          {item.amount.toFixed(2)}
-                        </TableCell>
-                        <TableCell>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 text-red-500"
-                            onClick={() => removeItem(item.id)}
-                            data-testid={`button-remove-item-${item.id}`}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
-              <div className="p-3 border-t">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="gap-1.5" data-testid="button-add-new-row">
-                      <Plus className="h-4 w-4" />
-                      Add New Row
-                      <ChevronDown className="h-3 w-3" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem onClick={addItem}>Add Item</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </div>
-
-            <div className="flex justify-end">
-              <div className="w-80 space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-slate-600">Sub Total</span>
-                  <span className="font-medium">{formData.subTotal.toFixed(2)}</span>
-                </div>
-
-                <div className="flex justify-between items-center gap-2">
-                  <span className="text-slate-600">Discount</span>
-                  <div className="flex items-center gap-2">
-                    <Input
-                      type="number"
-                      value={formData.discountValue}
-                      onChange={(e) => handleDiscountChange(formData.discountType, parseFloat(e.target.value) || 0)}
-
-                      className="w-16 text-sm text-right"
-                      min={0}
-                      data-testid="input-discount"
-                    />
-                    <Select
-                      value={formData.discountType}
-                      onValueChange={(value) => handleDiscountChange(value, formData.discountValue)}
-                    >
-                      <SelectTrigger className="w-16">
-                        <SelectValue />
+          <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
+            <div className="grid gap-6">
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <Label className="text-black">Vendor Name
+                    <span className="text-red-500">*</span>
+                  </Label>
+                  <div className="flex gap-2 mt-1">
+                    <Select onValueChange={handleVendorChange} value={formData.vendorId}>
+                      <SelectTrigger className="flex-1" data-testid="select-vendor">
+                        <SelectValue placeholder="Select a Vendor" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="percent">%</SelectItem>
-                        <SelectItem value="amount">₹</SelectItem>
+                        <div className="p-2">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Search className="h-4 w-4 text-gray-400" />
+                            <Input
+                              placeholder="Search vendors..."
+                              className="h-8"
+                              value={vendorSearchTerm}
+                              onChange={(e) => setVendorSearchTerm(e.target.value)}
+                            />
+                          </div>
+                        </div>
+                        {filteredVendors.map(vendor => (
+                          <SelectItem key={vendor.id} value={vendor.id}>
+                            {vendor.displayName || `${(vendor as any).firstName} ${(vendor as any).lastName}`.trim() || vendor.companyName}
+                          </SelectItem>
+                        ))}
+                        <div className="border-t mt-1 pt-1">
+                          <SelectItem
+                            value="__add_new_vendor__"
+                            onSelect={() => {
+                              setLocation("/vendors/new");
+                            }}
+                          >
+                            <div className="flex items-center gap-2 text-blue-600">
+                              <Plus className="h-4 w-4" />
+                              Add New Vendor
+                            </div>
+                          </SelectItem>
+                        </div>
                       </SelectContent>
                     </Select>
-                    <span className="text-pink-600 w-20 text-right">-{formData.discountAmount.toFixed(2)}</span>
+                    <Button variant="outline" size="icon" onClick={() => setLocation("/vendors/new")} data-testid="button-add-vendor">
+                      <Plus className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
+                <div></div>
+              </div>
 
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="radio"
-                      id="tds"
-                      name="taxType"
-                      value="TDS"
-                      checked={formData.taxType === 'TDS'}
-                      onChange={() => setFormData(prev => ({ ...prev, taxType: 'TDS' }))}
-                    />
-                    <Label htmlFor="tds">TDS</Label>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="radio"
-                      id="tcs"
-                      name="taxType"
-                      value="TCS"
-                      checked={formData.taxType === 'TCS'}
-                      onChange={() => setFormData(prev => ({ ...prev, taxType: 'TCS' }))}
-                    />
-                    <Label htmlFor="tcs">TCS</Label>
-                  </div>
-                  <Select
-                    value={formData.taxCategory}
-                    onValueChange={(value) => setFormData(prev => ({ ...prev, taxCategory: value }))}
-                  >
-                    <SelectTrigger className="flex-1">
-                      <SelectValue placeholder="Select a Tax" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">No Tax</SelectItem>
-                      {taxes.map(tax => (
-                        <SelectItem key={tax.id} value={tax.name}>
-                          {tax.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <Label className="text-black">Bill#
+                    <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    value={formData.billNumber}
+                    onChange={(e) => setFormData(prev => ({ ...prev, billNumber: e.target.value }))}
+                    className="mt-1"
+                    data-testid="input-bill-number"
+                  />
                 </div>
-
-                <div className="flex justify-between items-center gap-2">
-                  <span className="text-slate-600">Adjustment</span>
-                  <div className="flex items-center gap-2">
-                    <Input
-                      value={formData.adjustmentDescription}
-                      onChange={(e) => setFormData(prev => ({ ...prev, adjustmentDescription: e.target.value }))}
-                      placeholder="Description"
-                      className="w-32 text-sm"
-                    />
-                    <Input
-                      type="number"
-                      value={formData.adjustment}
-                      onChange={(e) => handleAdjustmentChange(parseFloat(e.target.value) || 0)}
-
-                      className="w-24 text-sm text-right"
-                      data-testid="input-adjustment"
-                    />
-                    <Info className="h-4 w-4 text-slate-400" />
-                  </div>
-                </div>
-
-                <div className="flex justify-between items-center pt-3 border-t font-semibold text-lg">
-                  <span>Total</span>
-                  <span data-testid="text-total">{formData.total.toFixed(2)}</span>
+                <div>
+                  <Label>Order Number</Label>
+                  <Input
+                    value={formData.orderNumber}
+                    onChange={(e) => setFormData(prev => ({ ...prev, orderNumber: e.target.value }))}
+                    className="mt-1"
+                    data-testid="input-order-number"
+                  />
                 </div>
               </div>
-            </div>
 
-            <div className="grid grid-cols-2 gap-6 mt-6 p-4 bg-slate-50 rounded-lg">
-              <div>
-                <Label>Notes</Label>
-                <Textarea
-                  value={formData.notes}
-                  onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-                  placeholder="Enter notes"
-                  className="mt-1 resize-none bg-white"
-                  data-testid="input-notes"
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <Label className="text-black">Bill Date
+                    <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    type="date"
+                    value={formData.billDate}
+                    onChange={(e) => setFormData(prev => ({ ...prev, billDate: e.target.value }))}
+                    className="mt-1"
+                    data-testid="input-bill-date"
+                  />
+                </div>
+                <div className="flex gap-4">
+                  <div className="flex-1">
+                    <Label>Due Date</Label>
+                    <Input
+                      type="date"
+                      value={formData.dueDate}
+                      onChange={(e) => setFormData(prev => ({ ...prev, dueDate: e.target.value }))}
+                      className="mt-1"
+                      data-testid="input-due-date"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <Label>Payment Terms</Label>
+                    <Select
+                      value={formData.paymentTerms}
+                      onValueChange={(value) => setFormData(prev => ({ ...prev, paymentTerms: value }))}
+                    >
+                      <SelectTrigger className="mt-1" data-testid="select-payment-terms">
+                        <SelectValue placeholder="Select terms" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Due on Receipt">Due on Receipt</SelectItem>
+                        <SelectItem value="Net 15">Net 15</SelectItem>
+                        <SelectItem value="Net 30">Net 30</SelectItem>
+                        <SelectItem value="Net 45">Net 45</SelectItem>
+                        <SelectItem value="Net 60">Net 60</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="reverse-charge"
+                  checked={formData.reverseCharge}
+                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, reverseCharge: checked as boolean }))}
                 />
-                <p className="text-xs text-slate-500 mt-1">It will not be shown in PDF</p>
+                <Label htmlFor="reverse-charge" className="text-sm">
+                  This transaction is applicable for reverse charge
+                </Label>
               </div>
+
               <div>
-                <Label>Attach File(s) to Bill</Label>
-                <div className="mt-1 border-2 border-dashed border-slate-200 rounded-lg p-4 text-center bg-white">
-                  <Button variant="outline" size="sm" className="gap-1.5">
-                    <Upload className="h-4 w-4" />
-                    Upload File
+                <Label className="flex items-center gap-1">
+                  Subject <Info className="h-3 w-3 text-slate-400" />
+                </Label>
+                <Textarea
+                  value={formData.subject}
+                  onChange={(e) => setFormData(prev => ({ ...prev, subject: e.target.value }))}
+                  placeholder="Enter a subject within 250 characters"
+                  className="mt-1 resize-none"
+                  maxLength={250}
+                  data-testid="input-subject"
+                />
+              </div>
+
+              <div className="flex items-center gap-2 text-sm text-slate-500">
+                <span>At Transaction Level</span>
+                <ChevronDown className="h-4 w-4" />
+              </div>
+
+              <div className="border rounded-lg overflow-hidden">
+                <div className="bg-slate-50 px-4 py-2 flex items-center justify-between border-b">
+                  <h3 className="font-medium text-slate-700">Item Table</h3>
+                  <Button variant="link" size="sm" className="text-blue-600">
+                    Bulk Actions
                   </Button>
-                  <p className="text-xs text-slate-500 mt-2">You can upload a maximum of 5 files, 10MB each</p>
+                </div>
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-slate-50">
+                      <TableHead className="w-[200px] text-xs">ITEM DETAILS</TableHead>
+                      <TableHead className="w-[150px] text-xs">ACCOUNT</TableHead>
+                      <TableHead className="w-[100px] text-xs text-center">QUANTITY</TableHead>
+                      <TableHead className="w-[140px] text-xs text-right">RATE (₹)</TableHead>
+                      <TableHead className="w-[120px] text-xs">TAX</TableHead>
+                      <TableHead className="w-[150px] text-xs">CUSTOMER DETAILS</TableHead>
+                      <TableHead className="w-[100px] text-xs text-right">AMOUNT</TableHead>
+                      <TableHead className="w-[50px]"></TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {formData.items.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={8} className="text-center py-8 text-slate-500">
+                          No items added yet. Click "Add New Row" to add items.
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      formData.items.map((item) => (
+                        <TableRow key={item.id}>
+                          <TableCell>
+                            <Select
+                              value={item.itemName || ""}
+                              onValueChange={(value) => {
+                                const product = products.find(p => p.name === value);
+                                if (product) {
+                                  handleProductSelect(item.id, product.id);
+                                }
+                              }}
+                            >
+                              <SelectTrigger className="text-sm" data-testid={`select-item-${item.id}`}>
+                                <SelectValue placeholder={loadingProducts ? "Loading items..." : "Select an item"} />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {loadingProducts ? (
+                                  <SelectItem value="loading" disabled>Loading items...</SelectItem>
+                                ) : products.length === 0 ? (
+                                  <SelectItem value="none" disabled>No items available</SelectItem>
+                                ) : (
+                                  products.map(product => {
+                                    const displayPrice = parseRateValue(product.purchaseRate) || parseRateValue(product.rate) || product.costPrice || product.sellingPrice || 0;
+                                    return (
+                                      <SelectItem key={product.id} value={product.name}>
+                                        {product.name} {product.usageUnit ? `(${product.usageUnit})` : ''} - ₹{displayPrice.toLocaleString('en-IN')}
+                                      </SelectItem>
+                                    );
+                                  })
+                                )}
+                              </SelectContent>
+                            </Select>
+                          </TableCell>
+                          <TableCell>
+                            <AccountSelectDropdown
+                              value={item.account}
+                              onValueChange={(value) => updateItem(item.id, 'account', value)}
+                              placeholder="Select an account"
+                              triggerClassName="text-sm"
+                              testId={`select-account-${item.id}`}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              type="number"
+                              value={item.quantity}
+                              onChange={(e) => updateItem(item.id, 'quantity', parseFloat(e.target.value) || 0)}
+
+                              className="text-sm text-center"
+                              min={0}
+                              step={0.01}
+                              data-testid={`input-quantity-${item.id}`}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              type="number"
+                              value={item.rate}
+                              onChange={(e) => updateItem(item.id, 'rate', parseFloat(e.target.value) || 0)}
+
+                              className="text-sm text-right"
+                              min={0}
+                              step={0.01}
+                              data-testid={`input-rate-${item.id}`}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Select
+                              value={item.tax || ""}
+                              onValueChange={(value) => updateItem(item.id, 'tax', value)}
+                            >
+                              <SelectTrigger className="text-sm" data-testid={`select-tax-${item.id}`}>
+                                <SelectValue placeholder="Select a Tax" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="none">No Tax</SelectItem>
+                                {taxes.map(tax => (
+                                  <SelectItem key={tax.id} value={tax.name}>
+                                    {tax.name} ({tax.rate}%)
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </TableCell>
+                          <TableCell>
+                            <Select
+                              value={item.customerDetails || "none"}
+                              onValueChange={(value) => {
+                                updateItem(item.id, 'customerDetails', value);
+                              }}
+                            >
+                              <SelectTrigger className="text-sm">
+                                <SelectValue placeholder="Select Customer">
+                                  {getCustomerDisplayName(item.customerDetails || "none")}
+                                </SelectValue>
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="none">None</SelectItem>
+                                {customers.map(customer => (
+                                  <SelectItem key={customer.id} value={customer.id}>
+                                    {customer.displayName || customer.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </TableCell>
+                          <TableCell className="text-right font-medium">
+                            {item.amount.toFixed(2)}
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 text-red-500"
+                              onClick={() => removeItem(item.id)}
+                              data-testid={`button-remove-item-${item.id}`}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+                <div className="p-3 border-t">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" size="sm" className="gap-1.5" data-testid="button-add-new-row">
+                        <Plus className="h-4 w-4" />
+                        Add New Row
+                        <ChevronDown className="h-3 w-3" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem onClick={addItem}>Add Item</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </div>
+
+              <div className="flex justify-end">
+                <div className="w-80 space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-600">Sub Total</span>
+                    <span className="font-medium">{formData.subTotal.toFixed(2)}</span>
+                  </div>
+
+                  <div className="flex justify-between items-center gap-2">
+                    <span className="text-slate-600">Discount</span>
+                    <div className="flex items-center gap-2">
+                      <Input
+                        type="number"
+                        value={formData.discountValue}
+                        onChange={(e) => handleDiscountChange(formData.discountType, parseFloat(e.target.value) || 0)}
+
+                        className="w-16 text-sm text-right"
+                        min={0}
+                        data-testid="input-discount"
+                      />
+                      <Select
+                        value={formData.discountType}
+                        onValueChange={(value) => handleDiscountChange(value, formData.discountValue)}
+                      >
+                        <SelectTrigger className="w-16">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="percent">%</SelectItem>
+                          <SelectItem value="amount">₹</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <span className="text-pink-600 w-20 text-right">-{formData.discountAmount.toFixed(2)}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        id="tds"
+                        name="taxType"
+                        value="TDS"
+                        checked={formData.taxType === 'TDS'}
+                        onChange={() => setFormData(prev => ({ ...prev, taxType: 'TDS' }))}
+                      />
+                      <Label htmlFor="tds">TDS</Label>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        id="tcs"
+                        name="taxType"
+                        value="TCS"
+                        checked={formData.taxType === 'TCS'}
+                        onChange={() => setFormData(prev => ({ ...prev, taxType: 'TCS' }))}
+                      />
+                      <Label htmlFor="tcs">TCS</Label>
+                    </div>
+                    <Select
+                      value={formData.taxCategory}
+                      onValueChange={(value) => setFormData(prev => ({ ...prev, taxCategory: value }))}
+                    >
+                      <SelectTrigger className="flex-1">
+                        <SelectValue placeholder="Select a Tax" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">No Tax</SelectItem>
+                        {taxes.map(tax => (
+                          <SelectItem key={tax.id} value={tax.name}>
+                            {tax.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="flex justify-between items-center gap-2">
+                    <span className="text-slate-600">Adjustment</span>
+                    <div className="flex items-center gap-2">
+                      <Input
+                        value={formData.adjustmentDescription}
+                        onChange={(e) => setFormData(prev => ({ ...prev, adjustmentDescription: e.target.value }))}
+                        placeholder="Description"
+                        className="w-32 text-sm"
+                      />
+                      <Input
+                        type="number"
+                        value={formData.adjustment}
+                        onChange={(e) => handleAdjustmentChange(parseFloat(e.target.value) || 0)}
+
+                        className="w-24 text-sm text-right"
+                        data-testid="input-adjustment"
+                      />
+                      <Info className="h-4 w-4 text-slate-400" />
+                    </div>
+                  </div>
+
+                  <div className="flex justify-between items-center pt-3 border-t font-semibold text-lg">
+                    <span>Total</span>
+                    <span data-testid="text-total">{formData.total.toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-6 mt-6 p-4 bg-slate-50 rounded-lg">
+                <div>
+                  <Label>Notes</Label>
+                  <Textarea
+                    value={formData.notes}
+                    onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
+                    placeholder="Enter notes"
+                    className="mt-1 resize-none bg-white"
+                    data-testid="input-notes"
+                  />
+                  <p className="text-xs text-slate-500 mt-1">It will not be shown in PDF</p>
+                </div>
+                <div>
+                  <Label>Attach File(s) to Bill</Label>
+                  <div className="mt-1 border-2 border-dashed border-slate-200 rounded-lg p-4 text-center bg-white">
+                    <Button variant="outline" size="sm" className="gap-1.5">
+                      <Upload className="h-4 w-4" />
+                      Upload File
+                    </Button>
+                    <p className="text-xs text-slate-500 mt-2">You can upload a maximum of 5 files, 10MB each</p>
+                  </div>
+                </div>
+              </div>
+
+              <p className="text-sm text-slate-500">
+                Additional Fields: Start adding custom fields for your payments made by going to Settings - Purchases - Bills.
+              </p>
             </div>
-
-            <p className="text-sm text-slate-500">
-              Additional Fields: Start adding custom fields for your payments made by going to Settings - Purchases - Bills.
-            </p>
           </div>
-        </div>
 
-        <div className="flex items-center gap-3 mt-6 p-4 bg-white rounded-lg shadow-sm border border-slate-200">
-          <Button
-            variant="outline"
-            onClick={() => handleSubmit('DRAFT')}
-            disabled={loading}
-            data-testid="button-save-draft"
-          >
-            Save as Draft
-          </Button>
-          <Button
-            className="bg-blue-600 hover:bg-blue-700"
-            onClick={() => handleSubmit('OPEN')}
-            disabled={loading}
-            data-testid="button-save-open"
-          >
-            Save as Open
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => setLocation("/bills")}
-            data-testid="button-cancel"
-          >
-            Cancel
-          </Button>
+          <div className="flex items-center gap-3 mt-6 p-4 bg-white rounded-lg shadow-sm border border-slate-200">
+            <Button
+              variant="outline"
+              onClick={() => handleSubmit('DRAFT')}
+              disabled={loading}
+              data-testid="button-save-draft"
+            >
+              Save as Draft
+            </Button>
+            <Button
+              className="bg-blue-600 hover:bg-blue-700"
+              onClick={() => handleSubmit('OPEN')}
+              disabled={loading}
+              data-testid="button-save-open"
+            >
+              Save as Open
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setLocation("/bills")}
+              data-testid="button-cancel"
+            >
+              Cancel
+            </Button>
+          </div>
         </div>
       </div>
     </div>

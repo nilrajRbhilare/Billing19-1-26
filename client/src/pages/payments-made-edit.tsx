@@ -341,7 +341,7 @@ export default function PaymentsMadeEdit() {
   if (paymentLoading) return <div className="p-8">Loading payment details...</div>;
 
   return (
-    <div className="min-h-screen bg-slate-50 overflow-y-auto invisible-scrollbar">
+    <div className="flex-1 flex flex-col bg-slate-50 h-screen">
       <div className="border-b border-slate-200 bg-white px-6 py-4 sticky top-0 z-10">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => setLocation("/payments-made")}>
@@ -351,127 +351,129 @@ export default function PaymentsMadeEdit() {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto p-6">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="h-auto p-0 bg-transparent gap-6 mb-6">
-            <TabsTrigger
-              value="bill_payment"
-              className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:text-blue-600 data-[state=active]:bg-transparent data-[state=active]:shadow-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 px-2 py-3 bg-transparent hover:bg-transparent transition-none"
-            >
-              Bill Payment
-            </TabsTrigger>
-            <TabsTrigger
-              value="vendor_advance"
-              className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:text-blue-600 data-[state=active]:bg-transparent data-[state=active]:shadow-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 px-2 py-3 bg-transparent hover:bg-transparent transition-none"
-            >
-              Vendor Advance
-            </TabsTrigger>
-          </TabsList>
+      <div className="flex-1 overflow-y-auto invisible-scrollbar">
+        <div className="max-w-4xl mx-auto p-6 pb-24">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="h-auto p-0 bg-transparent gap-6 mb-6">
+              <TabsTrigger
+                value="bill_payment"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:text-blue-600 data-[state=active]:bg-transparent data-[state=active]:shadow-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 px-2 py-3 bg-transparent hover:bg-transparent transition-none"
+              >
+                Bill Payment
+              </TabsTrigger>
+              <TabsTrigger
+                value="vendor_advance"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:text-blue-600 data-[state=active]:bg-transparent data-[state=active]:shadow-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 px-2 py-3 bg-transparent hover:bg-transparent transition-none"
+              >
+                Vendor Advance
+              </TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="bill_payment" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label>Vendor Name*</Label>
-                <Select value={formData.vendorId} onValueChange={handleVendorChange}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a Vendor" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {vendors.map((v) => (
-                      <SelectItem key={v.id} value={v.id}>{v.displayName}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+            <TabsContent value="bill_payment" className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label>Vendor Name*</Label>
+                  <Select value={formData.vendorId} onValueChange={handleVendorChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a Vendor" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {vendors.map((v) => (
+                        <SelectItem key={v.id} value={v.id}>{v.displayName}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-              <div className="space-y-2">
-                <Label>Payment #*</Label>
-                <Input value={formData.paymentNumber} onChange={(e) => setFormData(p => ({ ...p, paymentNumber: e.target.value }))} />
-              </div>
+                <div className="space-y-2">
+                  <Label>Payment #*</Label>
+                  <Input value={formData.paymentNumber} onChange={(e) => setFormData(p => ({ ...p, paymentNumber: e.target.value }))} />
+                </div>
 
-              <div className="space-y-2">
-                <Label>Payment Made*</Label>
-                <div className="flex">
-                  <span className="inline-flex items-center px-3 border border-r-0 rounded-l-md bg-slate-50 text-sm text-slate-500">INR</span>
-                  <Input type="number" className="rounded-l-none" value={formData.paymentAmount} onChange={(e) => handlePaymentAmountChange(e.target.value)} />
+                <div className="space-y-2">
+                  <Label>Payment Made*</Label>
+                  <div className="flex">
+                    <span className="inline-flex items-center px-3 border border-r-0 rounded-l-md bg-slate-50 text-sm text-slate-500">INR</span>
+                    <Input type="number" className="rounded-l-none" value={formData.paymentAmount} onChange={(e) => handlePaymentAmountChange(e.target.value)} />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Payment Date*</Label>
+                  <Input type="date" value={formData.paymentDate} onChange={(e) => setFormData(p => ({ ...p, paymentDate: e.target.value }))} />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Payment Mode</Label>
+                  <Select value={formData.paymentMode} onValueChange={(v) => setFormData(p => ({ ...p, paymentMode: v }))}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {PAYMENT_MODES.map(m => <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Paid Through*</Label>
+                  <Select value={formData.paidThrough} onValueChange={(v) => setFormData(p => ({ ...p, paidThrough: v }))}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {PAID_THROUGH_OPTIONS.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label>Payment Date*</Label>
-                <Input type="date" value={formData.paymentDate} onChange={(e) => setFormData(p => ({ ...p, paymentDate: e.target.value }))} />
+              {formData.vendorId && (
+                <Card className="mt-6">
+                  <CardContent className="p-4">
+                    <h3 className="font-medium mb-4">Unpaid Bills</h3>
+                    <div className="border rounded-lg overflow-hidden">
+                      <table className="w-full text-sm">
+                        <thead className="bg-slate-50 border-b">
+                          <tr>
+                            <th className="px-4 py-2 text-left">Bill Number</th>
+                            <th className="px-4 py-2 text-left">Bill Date</th>
+                            <th className="px-4 py-2 text-right">Bill Amount</th>
+                            <th className="px-4 py-2 text-right">Balance Due</th>
+                            <th className="px-4 py-2 text-right">Payment</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y">
+                          {vendorBills.length === 0 ? (
+                            <tr><td colSpan={5} className="p-4 text-center text-slate-500">No unpaid bills found</td></tr>
+                          ) : (
+                            vendorBills.map(bill => (
+                              <tr key={bill.id}>
+                                <td className="px-4 py-2">{bill.billNumber}</td>
+                                <td className="px-4 py-2">{bill.date}</td>
+                                <td className="px-4 py-2 text-right">₹{bill.total}</td>
+                                <td className="px-4 py-2 text-right text-red-600">₹{bill.amountDue}</td>
+                                <td className="px-4 py-2 text-right">
+                                  <Input
+                                    type="number"
+                                    className="w-32 ml-auto h-8"
+                                    value={selectedBills[bill.id]?.payment || ""}
+                                    onChange={(e) => handleBillPaymentChange(bill.id, parseFloat(e.target.value) || 0)}
+                                  />
+                                </td>
+                              </tr>
+                            ))
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              <div className="flex justify-end gap-3 pt-6">
+                <Button variant="outline" onClick={() => setLocation("/payments-made")}>Cancel</Button>
+                <Button onClick={() => handleSubmit("PAID")} disabled={saving}>{saving ? "Updating..." : "Update Payment"}</Button>
               </div>
-
-              <div className="space-y-2">
-                <Label>Payment Mode</Label>
-                <Select value={formData.paymentMode} onValueChange={(v) => setFormData(p => ({ ...p, paymentMode: v }))}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {PAYMENT_MODES.map(m => <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Paid Through*</Label>
-                <Select value={formData.paidThrough} onValueChange={(v) => setFormData(p => ({ ...p, paidThrough: v }))}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {PAID_THROUGH_OPTIONS.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            {formData.vendorId && (
-              <Card className="mt-6">
-                <CardContent className="p-4">
-                  <h3 className="font-medium mb-4">Unpaid Bills</h3>
-                  <div className="border rounded-lg overflow-hidden">
-                    <table className="w-full text-sm">
-                      <thead className="bg-slate-50 border-b">
-                        <tr>
-                          <th className="px-4 py-2 text-left">Bill Number</th>
-                          <th className="px-4 py-2 text-left">Bill Date</th>
-                          <th className="px-4 py-2 text-right">Bill Amount</th>
-                          <th className="px-4 py-2 text-right">Balance Due</th>
-                          <th className="px-4 py-2 text-right">Payment</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y">
-                        {vendorBills.length === 0 ? (
-                          <tr><td colSpan={5} className="p-4 text-center text-slate-500">No unpaid bills found</td></tr>
-                        ) : (
-                          vendorBills.map(bill => (
-                            <tr key={bill.id}>
-                              <td className="px-4 py-2">{bill.billNumber}</td>
-                              <td className="px-4 py-2">{bill.date}</td>
-                              <td className="px-4 py-2 text-right">₹{bill.total}</td>
-                              <td className="px-4 py-2 text-right text-red-600">₹{bill.amountDue}</td>
-                              <td className="px-4 py-2 text-right">
-                                <Input
-                                  type="number"
-                                  className="w-32 ml-auto h-8"
-                                  value={selectedBills[bill.id]?.payment || ""}
-                                  onChange={(e) => handleBillPaymentChange(bill.id, parseFloat(e.target.value) || 0)}
-                                />
-                              </td>
-                            </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            <div className="flex justify-end gap-3 pt-6">
-              <Button variant="outline" onClick={() => setLocation("/payments-made")}>Cancel</Button>
-              <Button onClick={() => handleSubmit("PAID")} disabled={saving}>{saving ? "Updating..." : "Update Payment"}</Button>
-            </div>
-          </TabsContent>
-        </Tabs>
+            </TabsContent>
+          </Tabs>
+        </div>
       </div>
     </div>
   );

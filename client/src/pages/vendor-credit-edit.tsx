@@ -367,7 +367,7 @@ export default function VendorCreditEdit() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 overflow-y-auto invisible-scrollbar">
+    <div className="flex-1 flex flex-col bg-slate-50 h-screen">
       <div className="border-b border-slate-200 bg-white px-6 py-4 sticky top-0 z-10">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -408,345 +408,347 @@ export default function VendorCreditEdit() {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto p-6 space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
-          <div className="md:col-span-2">
-            <Label className="text-black">Vendor Name
-              <span className="text-red-600">*</span>
-            </Label>
-            <div className="flex gap-2">
-              <Select
-                value={formData.vendorId}
-                onValueChange={handleVendorChange}
-              >
-                <SelectTrigger className="flex-1" data-testid="select-vendor">
-                  <SelectValue placeholder="Select a Vendor" />
-                </SelectTrigger>
-                <SelectContent>
-                  {vendorsLoading ? (
-                    <SelectItem value="_loading" disabled>Loading...</SelectItem>
-                  ) : vendors.length === 0 ? (
-                    <SelectItem value="_empty" disabled>No vendors found</SelectItem>
-                  ) : (
-                    vendors.map((vendor) => (
-                      <SelectItem key={vendor.id} value={vendor.id}>
-                        {vendor.displayName}
-                      </SelectItem>
-                    ))
-                  )}
-                </SelectContent>
-              </Select>
-              <Button variant="outline" size="icon">
-                <Search className="h-4 w-4" />
-              </Button>
+      <div className="flex-1 overflow-y-auto invisible-scrollbar">
+        <div className="max-w-5xl mx-auto p-6 space-y-6 pb-24">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+            <div className="md:col-span-2">
+              <Label className="text-black">Vendor Name
+                <span className="text-red-600">*</span>
+              </Label>
+              <div className="flex gap-2">
+                <Select
+                  value={formData.vendorId}
+                  onValueChange={handleVendorChange}
+                >
+                  <SelectTrigger className="flex-1" data-testid="select-vendor">
+                    <SelectValue placeholder="Select a Vendor" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {vendorsLoading ? (
+                      <SelectItem value="_loading" disabled>Loading...</SelectItem>
+                    ) : vendors.length === 0 ? (
+                      <SelectItem value="_empty" disabled>No vendors found</SelectItem>
+                    ) : (
+                      vendors.map((vendor) => (
+                        <SelectItem key={vendor.id} value={vendor.id}>
+                          {vendor.displayName}
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
+                <Button variant="outline" size="icon">
+                  <Search className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div>
-            <Label className="text-black">Credit Note#
-              <span className="text-red-600">*</span>
-            </Label>
-            <Input
-              value={formData.creditNoteNumber}
-              onChange={(e) => setFormData(prev => ({ ...prev, creditNoteNumber: e.target.value }))}
-              data-testid="input-credit-note-number"
-            />
-          </div>
-
-          <div>
-            <Label>Reference Number</Label>
-            <Input
-              value={formData.referenceNumber}
-              onChange={(e) => setFormData(prev => ({ ...prev, referenceNumber: e.target.value }))}
-              data-testid="input-reference-number"
-            />
-          </div>
-
-          <div>
-            <Label>Order Number</Label>
-            <Input
-              value={formData.orderNumber}
-              onChange={(e) => setFormData(prev => ({ ...prev, orderNumber: e.target.value }))}
-              data-testid="input-order-number"
-            />
-          </div>
-
-          <div>
-            <Label>Vendor Credit Date</Label>
-            <Input
-              type="date"
-              value={formData.vendorCreditDate}
-              onChange={(e) => setFormData(prev => ({ ...prev, vendorCreditDate: e.target.value }))}
-              data-testid="input-vendor-credit-date"
-            />
-          </div>
-        </div>
-
-        <div>
-          <Label>Subject</Label>
-          <Input
-            placeholder="Enter a subject within 250 characters"
-            maxLength={250}
-            value={formData.subject}
-            onChange={(e) => setFormData(prev => ({ ...prev, subject: e.target.value }))}
-            data-testid="input-subject"
-          />
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Checkbox
-            checked={formData.reverseCharge}
-            onCheckedChange={(checked) => setFormData(prev => ({ ...prev, reverseCharge: !!checked }))}
-            data-testid="checkbox-reverse-charge"
-          />
-          <span className="text-sm text-slate-600">This transaction is applicable for reverse charge</span>
-        </div>
-
-        <div className="border-t pt-4">
-          <div className="flex items-center gap-2 mb-4">
-            <RefreshCw className="h-4 w-4 text-slate-400" />
-            <span className="text-sm text-slate-600">At Transaction Level</span>
-          </div>
-
-          <div className="border rounded-lg overflow-hidden">
-            <div className="flex items-center justify-between px-4 py-3 bg-slate-50 border-b">
-              <h3 className="font-medium">Item Table</h3>
-              <Button variant="link" size="sm" className="text-blue-600">
-                Bulk Actions
-              </Button>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <Label className="text-black">Credit Note#
+                <span className="text-red-600">*</span>
+              </Label>
+              <Input
+                value={formData.creditNoteNumber}
+                onChange={(e) => setFormData(prev => ({ ...prev, creditNoteNumber: e.target.value }))}
+                data-testid="input-credit-note-number"
+              />
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="bg-slate-50 border-b">
-                  <tr>
-                    <th className="px-4 py-3 text-left font-medium text-slate-600 uppercase text-xs w-8"></th>
-                    <th className="px-4 py-3 text-left font-medium text-slate-600 uppercase text-xs">Item Details</th>
-                    <th className="px-4 py-3 text-left font-medium text-slate-600 uppercase text-xs">Account</th>
-                    <th className="px-4 py-3 text-center font-medium text-slate-600 uppercase text-xs">Quantity</th>
-                    <th className="px-4 py-3 text-right font-medium text-slate-600 uppercase text-xs">Rate</th>
-                    <th className="px-4 py-3 text-left font-medium text-slate-600 uppercase text-xs">Tax</th>
-                    <th className="px-4 py-3 text-right font-medium text-slate-600 uppercase text-xs">Amount</th>
-                    <th className="px-4 py-3 w-10"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {items.length === 0 ? (
+            <div>
+              <Label>Reference Number</Label>
+              <Input
+                value={formData.referenceNumber}
+                onChange={(e) => setFormData(prev => ({ ...prev, referenceNumber: e.target.value }))}
+                data-testid="input-reference-number"
+              />
+            </div>
+
+            <div>
+              <Label>Order Number</Label>
+              <Input
+                value={formData.orderNumber}
+                onChange={(e) => setFormData(prev => ({ ...prev, orderNumber: e.target.value }))}
+                data-testid="input-order-number"
+              />
+            </div>
+
+            <div>
+              <Label>Vendor Credit Date</Label>
+              <Input
+                type="date"
+                value={formData.vendorCreditDate}
+                onChange={(e) => setFormData(prev => ({ ...prev, vendorCreditDate: e.target.value }))}
+                data-testid="input-vendor-credit-date"
+              />
+            </div>
+          </div>
+
+          <div>
+            <Label>Subject</Label>
+            <Input
+              placeholder="Enter a subject within 250 characters"
+              maxLength={250}
+              value={formData.subject}
+              onChange={(e) => setFormData(prev => ({ ...prev, subject: e.target.value }))}
+              data-testid="input-subject"
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Checkbox
+              checked={formData.reverseCharge}
+              onCheckedChange={(checked) => setFormData(prev => ({ ...prev, reverseCharge: !!checked }))}
+              data-testid="checkbox-reverse-charge"
+            />
+            <span className="text-sm text-slate-600">This transaction is applicable for reverse charge</span>
+          </div>
+
+          <div className="border-t pt-4">
+            <div className="flex items-center gap-2 mb-4">
+              <RefreshCw className="h-4 w-4 text-slate-400" />
+              <span className="text-sm text-slate-600">At Transaction Level</span>
+            </div>
+
+            <div className="border rounded-lg overflow-hidden">
+              <div className="flex items-center justify-between px-4 py-3 bg-slate-50 border-b">
+                <h3 className="font-medium">Item Table</h3>
+                <Button variant="link" size="sm" className="text-blue-600">
+                  Bulk Actions
+                </Button>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-slate-50 border-b">
                     <tr>
-                      <td colSpan={8} className="px-4 py-8 text-center text-slate-500">
-                        <p>No items added yet. Click "Add New Row" to add items.</p>
-                      </td>
+                      <th className="px-4 py-3 text-left font-medium text-slate-600 uppercase text-xs w-8"></th>
+                      <th className="px-4 py-3 text-left font-medium text-slate-600 uppercase text-xs">Item Details</th>
+                      <th className="px-4 py-3 text-left font-medium text-slate-600 uppercase text-xs">Account</th>
+                      <th className="px-4 py-3 text-center font-medium text-slate-600 uppercase text-xs">Quantity</th>
+                      <th className="px-4 py-3 text-right font-medium text-slate-600 uppercase text-xs">Rate</th>
+                      <th className="px-4 py-3 text-left font-medium text-slate-600 uppercase text-xs">Tax</th>
+                      <th className="px-4 py-3 text-right font-medium text-slate-600 uppercase text-xs">Amount</th>
+                      <th className="px-4 py-3 w-10"></th>
                     </tr>
-                  ) : (
-                    items.map((item, index) => (
-                      <tr key={item.id} className="border-b last:border-b-0">
-                        <td className="px-4 py-3 text-center">
-                          <span className="text-slate-400">:</span>
-                        </td>
-                        <td className="px-4 py-3">
-                          <Select
-                            value={item.itemId || ""}
-                            onValueChange={(v) => updateItem(item.id, 'itemId', v)}
-                          >
-                            <SelectTrigger data-testid={`select-item-${index}`}>
-                              <SelectValue placeholder="Select an item">
-                                {item.itemName || products.find(p => p.id === item.itemId)?.name || "Select an item"}
-                              </SelectValue>
-                            </SelectTrigger>
-                            <SelectContent>
-                              {productsLoading ? (
-                                <SelectItem value="_loading" disabled>Loading...</SelectItem>
-                              ) : products.length === 0 ? (
-                                <SelectItem value="_empty" disabled>No items found</SelectItem>
-                              ) : (
-                                products.map((product) => (
-                                  <SelectItem key={product.id} value={product.id}>
-                                    {product.name}
-                                  </SelectItem>
-                                ))
-                              )}
-                            </SelectContent>
-                          </Select>
-                        </td>
-                        <td className="px-4 py-3">
-                          <AccountSelectDropdown
-                            value={item.account}
-                            onValueChange={(v) => updateItem(item.id, 'account', v)}
-                            placeholder="Select an account"
-                            testId={`select-account-${index}`}
-                          />
-                        </td>
-                        <td className="px-4 py-3">
-                          <Input
-                            type="number"
-                            step="0.01"
-                            className="w-20 text-center"
-                            value={item.quantity}
-                            onChange={(e) => updateItem(item.id, 'quantity', parseFloat(e.target.value) || 0)}
-                            data-testid={`input-quantity-${index}`}
-                          />
-                        </td>
-                        <td className="px-4 py-3">
-                          <Input
-                            type="number"
-                            step="0.01"
-                            className="w-24 text-right"
-                            value={item.rate}
-                            onChange={(e) => updateItem(item.id, 'rate', parseFloat(e.target.value) || 0)}
-                            data-testid={`input-rate-${index}`}
-                          />
-                        </td>
-                        <td className="px-4 py-3">
-                          <Select
-                            value={item.tax || ""}
-                            onValueChange={(v) => updateItem(item.id, 'tax', v)}
-                          >
-                            <SelectTrigger data-testid={`select-tax-${index}`}>
-                              <SelectValue placeholder="Select tax">
-                                {TAX_OPTIONS.find(o => o.value === item.tax)?.label || item.tax || "Select tax"}
-                              </SelectValue>
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="none">No Tax</SelectItem>
-                              {TAX_OPTIONS.map((option) => (
-                                <SelectItem key={option.value} value={option.value}>
-                                  {option.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </td>
-                        <td className="px-4 py-3 text-right font-medium">
-                          {item.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                        </td>
-                        <td className="px-4 py-3">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => removeItem(item.id)}
-                            data-testid={`button-remove-item-${index}`}
-                          >
-                            <Trash2 className="h-4 w-4 text-red-500" />
-                          </Button>
+                  </thead>
+                  <tbody>
+                    {items.length === 0 ? (
+                      <tr>
+                        <td colSpan={8} className="px-4 py-8 text-center text-slate-500">
+                          <p>No items added yet. Click "Add New Row" to add items.</p>
                         </td>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="px-4 py-3 border-t">
-              <Button
-                variant="link"
-                className="text-blue-600 p-0"
-                onClick={addItem}
-                data-testid="button-add-item"
-              >
-                <Plus className="h-4 w-4 mr-1" />
-                Add New Row
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-6">
-          <div>
-            <Label>Notes</Label>
-            <Textarea
-              placeholder="Notes for internal use"
-              value={formData.notes}
-              onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-              className="min-h-[100px]"
-              data-testid="input-notes"
-            />
-          </div>
-
-          <div className="space-y-3 bg-slate-50 p-4 rounded-lg">
-            <div className="flex justify-between text-sm">
-              <span>Sub Total</span>
-              <span className="font-medium">{calculateSubTotal().toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="text-sm">Discount</span>
-              <Select
-                value={formData.discountType}
-                onValueChange={(v) => setFormData(prev => ({ ...prev, discountType: v as "percentage" | "amount" }))}
-              >
-                <SelectTrigger className="w-24">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="percentage">%</SelectItem>
-                  <SelectItem value="amount">Amount</SelectItem>
-                </SelectContent>
-              </Select>
-              <Input
-                type="number"
-                className="w-20 text-right"
-                value={formData.discountValue}
-                onChange={(e) => setFormData(prev => ({ ...prev, discountValue: e.target.value }))}
-                data-testid="input-discount"
-              />
-              <span className="text-sm font-medium">-{calculateDiscount().toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
-            </div>
-
-            {calculateTaxAmount() > 0 && (
-              <div className="flex justify-between text-sm">
-                <span>Tax</span>
-                <span className="font-medium">{calculateTaxAmount().toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+                    ) : (
+                      items.map((item, index) => (
+                        <tr key={item.id} className="border-b last:border-b-0">
+                          <td className="px-4 py-3 text-center">
+                            <span className="text-slate-400">:</span>
+                          </td>
+                          <td className="px-4 py-3">
+                            <Select
+                              value={item.itemId || ""}
+                              onValueChange={(v) => updateItem(item.id, 'itemId', v)}
+                            >
+                              <SelectTrigger data-testid={`select-item-${index}`}>
+                                <SelectValue placeholder="Select an item">
+                                  {item.itemName || products.find(p => p.id === item.itemId)?.name || "Select an item"}
+                                </SelectValue>
+                              </SelectTrigger>
+                              <SelectContent>
+                                {productsLoading ? (
+                                  <SelectItem value="_loading" disabled>Loading...</SelectItem>
+                                ) : products.length === 0 ? (
+                                  <SelectItem value="_empty" disabled>No items found</SelectItem>
+                                ) : (
+                                  products.map((product) => (
+                                    <SelectItem key={product.id} value={product.id}>
+                                      {product.name}
+                                    </SelectItem>
+                                  ))
+                                )}
+                              </SelectContent>
+                            </Select>
+                          </td>
+                          <td className="px-4 py-3">
+                            <AccountSelectDropdown
+                              value={item.account}
+                              onValueChange={(v) => updateItem(item.id, 'account', v)}
+                              placeholder="Select an account"
+                              testId={`select-account-${index}`}
+                            />
+                          </td>
+                          <td className="px-4 py-3">
+                            <Input
+                              type="number"
+                              step="0.01"
+                              className="w-20 text-center"
+                              value={item.quantity}
+                              onChange={(e) => updateItem(item.id, 'quantity', parseFloat(e.target.value) || 0)}
+                              data-testid={`input-quantity-${index}`}
+                            />
+                          </td>
+                          <td className="px-4 py-3">
+                            <Input
+                              type="number"
+                              step="0.01"
+                              className="w-24 text-right"
+                              value={item.rate}
+                              onChange={(e) => updateItem(item.id, 'rate', parseFloat(e.target.value) || 0)}
+                              data-testid={`input-rate-${index}`}
+                            />
+                          </td>
+                          <td className="px-4 py-3">
+                            <Select
+                              value={item.tax || ""}
+                              onValueChange={(v) => updateItem(item.id, 'tax', v)}
+                            >
+                              <SelectTrigger data-testid={`select-tax-${index}`}>
+                                <SelectValue placeholder="Select tax">
+                                  {TAX_OPTIONS.find(o => o.value === item.tax)?.label || item.tax || "Select tax"}
+                                </SelectValue>
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="none">No Tax</SelectItem>
+                                {TAX_OPTIONS.map((option) => (
+                                  <SelectItem key={option.value} value={option.value}>
+                                    {option.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </td>
+                          <td className="px-4 py-3 text-right font-medium">
+                            {item.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                          </td>
+                          <td className="px-4 py-3">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => removeItem(item.id)}
+                              data-testid={`button-remove-item-${index}`}
+                            >
+                              <Trash2 className="h-4 w-4 text-red-500" />
+                            </Button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
               </div>
-            )}
 
-            <div className="flex items-center gap-2">
-              <span className="text-sm">TDS/TCS</span>
-              <Select
-                value={formData.taxType}
-                onValueChange={(v) => setFormData(prev => ({ ...prev, taxType: v as "tds" | "tcs" }))}
-              >
-                <SelectTrigger className="w-20">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="tds">TDS</SelectItem>
-                  <SelectItem value="tcs">TCS</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select
-                value={formData.tdsTcs}
-                onValueChange={(v) => setFormData(prev => ({ ...prev, tdsTcs: v }))}
-              >
-                <SelectTrigger className="flex-1">
-                  <SelectValue placeholder="Select TDS/TCS" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">None</SelectItem>
-                  {TDS_TCS_OPTIONS.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="px-4 py-3 border-t">
+                <Button
+                  variant="link"
+                  className="text-blue-600 p-0"
+                  onClick={addItem}
+                  data-testid="button-add-item"
+                >
+                  <Plus className="h-4 w-4 mr-1" />
+                  Add New Row
+                </Button>
+              </div>
             </div>
+          </div>
 
-            <div className="flex items-center gap-2">
-              <span className="text-sm">Adjustment</span>
-              <Input
-                type="number"
-                className="w-24 text-right"
-                value={formData.adjustment}
-                onChange={(e) => setFormData(prev => ({ ...prev, adjustment: e.target.value }))}
-                data-testid="input-adjustment"
+          <div className="grid grid-cols-2 gap-6">
+            <div>
+              <Label>Notes</Label>
+              <Textarea
+                placeholder="Notes for internal use"
+                value={formData.notes}
+                onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
+                className="min-h-[100px]"
+                data-testid="input-notes"
               />
             </div>
 
-            <div className="flex justify-between pt-3 border-t font-semibold">
-              <span>Total (INR)</span>
-              <span className="text-lg">{calculateTotal().toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+            <div className="space-y-3 bg-slate-50 p-4 rounded-lg">
+              <div className="flex justify-between text-sm">
+                <span>Sub Total</span>
+                <span className="font-medium">{calculateSubTotal().toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-sm">Discount</span>
+                <Select
+                  value={formData.discountType}
+                  onValueChange={(v) => setFormData(prev => ({ ...prev, discountType: v as "percentage" | "amount" }))}
+                >
+                  <SelectTrigger className="w-24">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="percentage">%</SelectItem>
+                    <SelectItem value="amount">Amount</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Input
+                  type="number"
+                  className="w-20 text-right"
+                  value={formData.discountValue}
+                  onChange={(e) => setFormData(prev => ({ ...prev, discountValue: e.target.value }))}
+                  data-testid="input-discount"
+                />
+                <span className="text-sm font-medium">-{calculateDiscount().toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+              </div>
+
+              {calculateTaxAmount() > 0 && (
+                <div className="flex justify-between text-sm">
+                  <span>Tax</span>
+                  <span className="font-medium">{calculateTaxAmount().toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+                </div>
+              )}
+
+              <div className="flex items-center gap-2">
+                <span className="text-sm">TDS/TCS</span>
+                <Select
+                  value={formData.taxType}
+                  onValueChange={(v) => setFormData(prev => ({ ...prev, taxType: v as "tds" | "tcs" }))}
+                >
+                  <SelectTrigger className="w-20">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="tds">TDS</SelectItem>
+                    <SelectItem value="tcs">TCS</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select
+                  value={formData.tdsTcs}
+                  onValueChange={(v) => setFormData(prev => ({ ...prev, tdsTcs: v }))}
+                >
+                  <SelectTrigger className="flex-1">
+                    <SelectValue placeholder="Select TDS/TCS" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">None</SelectItem>
+                    {TDS_TCS_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-sm">Adjustment</span>
+                <Input
+                  type="number"
+                  className="w-24 text-right"
+                  value={formData.adjustment}
+                  onChange={(e) => setFormData(prev => ({ ...prev, adjustment: e.target.value }))}
+                  data-testid="input-adjustment"
+                />
+              </div>
+
+              <div className="flex justify-between pt-3 border-t font-semibold">
+                <span>Total (INR)</span>
+                <span className="text-lg">{calculateTotal().toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+              </div>
             </div>
           </div>
         </div>

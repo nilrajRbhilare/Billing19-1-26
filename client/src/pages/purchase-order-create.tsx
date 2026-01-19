@@ -567,583 +567,585 @@ export default function PurchaseOrderCreate() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 overflow-y-auto invisible-scrollbar">
-      <div className="max-w-6xl mx-auto p-6">
-        <div className="flex items-center gap-3 mb-6">
-          <FileText className="h-6 w-6 text-slate-600" />
-          <h1 className="text-2xl font-semibold text-slate-900">
-            New Purchase Order
-          </h1>
-        </div>
+    <div className="flex-1 flex flex-col bg-slate-50 h-screen">
+      <div className="flex-1 overflow-y-auto invisible-scrollbar">
+        <div className="max-w-6xl mx-auto p-6 pb-24">
+          <div className="flex items-center gap-3 mb-6">
+            <FileText className="h-6 w-6 text-slate-600" />
+            <h1 className="text-2xl font-semibold text-slate-900">
+              New Purchase Order
+            </h1>
+          </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-8 space-y-8">
-          {/* Vendor Selection */}
-          <div className="grid grid-cols-2 gap-8">
-            <div className="space-y-2">
+          <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-8 space-y-8">
+            {/* Vendor Selection */}
+            <div className="grid grid-cols-2 gap-8">
+              <div className="space-y-2">
+                <Label className="text-black">
+                  Vendor Name <span className="text-red-500">*</span>
+                </Label>
+                <div className="flex gap-2">
+                  <Select
+                    onValueChange={handleVendorChange}
+                    value={formData.vendorId}
+                  >
+                    <SelectTrigger className="flex-1" data-testid="select-vendor">
+                      <SelectValue placeholder="Select a Vendor" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <div className="p-2">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Search className="h-4 w-4 text-gray-400" />
+                          <Input
+                            placeholder="Search vendors..."
+                            className="h-8"
+                            value={vendorSearchTerm}
+                            onChange={(e) => setVendorSearchTerm(e.target.value)}
+                          />
+                        </div>
+                      </div>
+                      {filteredVendors.map((vendor) => (
+                        <SelectItem key={vendor.id} value={vendor.id}>
+                          {vendor.displayName}
+                        </SelectItem>
+                      ))}
+                      <div className="border-t mt-1 pt-1">
+                        <SelectItem
+                          value="__add_new_vendor__"
+                          onSelect={() => setLocation("/vendors/new")}
+                        >
+                          <div className="flex items-center gap-2 text-blue-600">
+                            <Plus className="h-4 w-4" /> Add New Vendor
+                          </div>
+                        </SelectItem>
+                      </div>
+                    </SelectContent>
+                  </Select>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => setLocation("/vendors/new")}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Delivery Address Section */}
+            <div className="space-y-4">
               <Label className="text-black">
-                Vendor Name <span className="text-red-500">*</span>
+                Delivery Address <span className="text-red-500">*</span>
               </Label>
-              <div className="flex gap-2">
+              <div className="flex items-center space-x-6">
+                <div className="flex items-center space-x-2">
+                  <RadioGroup
+                    value={formData.deliveryAddressType}
+                    onValueChange={(v) =>
+                      setFormData({ ...formData, deliveryAddressType: v as any })
+                    }
+                    className="flex space-x-4"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="organization" id="addr-org" />
+                      <Label htmlFor="addr-org" className="font-normal">
+                        Organization
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="customer" id="addr-cust" />
+                      <Label htmlFor="addr-cust" className="font-normal">
+                        Customer
+                      </Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+              </div>
+
+              {formData.deliveryAddressType === "organization" ? (
+                <div className="border rounded-md p-4 bg-slate-50/50 space-y-4 max-w-xl">
+                  <div className="space-y-2">
+                    <Label className="text-xs text-slate-500 uppercase font-semibold">
+                      Organization Name
+                    </Label>
+                    <Input
+                      value={formData.organizationDetails.name}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          organizationDetails: {
+                            ...formData.organizationDetails,
+                            name: e.target.value,
+                          },
+                        })
+                      }
+                      className="bg-white"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-xs text-slate-500 uppercase font-semibold">
+                      Organization Address
+                    </Label>
+                    <Textarea
+                      value={formData.organizationDetails.address}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          organizationDetails: {
+                            ...formData.organizationDetails,
+                            address: e.target.value,
+                          },
+                        })
+                      }
+                      className="bg-white min-h-[100px] resize-none"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4 max-w-xl">
+                  <Popover
+                    open={isCustomerPopoverOpen}
+                    onOpenChange={setIsCustomerPopoverOpen}
+                  >
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={isCustomerPopoverOpen}
+                        className="w-full justify-between bg-white"
+                      >
+                        {formData.selectedCustomer
+                          ? formData.selectedCustomer.displayName
+                          : "Select a Customer"}
+                        <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[400px] p-0" align="start">
+                      <Command>
+                        <CommandInput
+                          placeholder="Search customers..."
+                          value={formData.customerSearchQuery}
+                          onValueChange={(v) =>
+                            setFormData({ ...formData, customerSearchQuery: v })
+                          }
+                        />
+                        <CommandEmpty>
+                          <div className="p-4 text-center space-y-4">
+                            <p className="text-sm text-slate-500">
+                              No customers found.
+                            </p>
+                            <Button
+                              variant="default"
+                              className="w-full py-6 text-base"
+                              onClick={() => setLocation("/customers/new")}
+                            >
+                              <Plus className="mr-2 h-5 w-5" /> Create Customer
+                            </Button>
+                          </div>
+                        </CommandEmpty>
+                        <CommandGroup>
+                          {customers
+                            .filter((c) =>
+                              c.displayName
+                                .toLowerCase()
+                                .includes(
+                                  formData.customerSearchQuery.toLowerCase(),
+                                ),
+                            )
+                            .map((customer) => (
+                              <CommandItem
+                                key={customer.id}
+                                value={customer.displayName}
+                                onSelect={() => {
+                                  setFormData({
+                                    ...formData,
+                                    selectedCustomer: customer,
+                                  });
+                                  setIsCustomerPopoverOpen(false);
+                                }}
+                              >
+                                {customer.displayName}
+                              </CommandItem>
+                            ))}
+                        </CommandGroup>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              )}
+            </div>
+
+            <div className="grid grid-cols-2 gap-8">
+              <div className="space-y-2">
+                <Label className="text-black">
+                  Date <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  type="date"
+                  value={formData.date}
+                  onChange={(e) =>
+                    setFormData({ ...formData, date: e.target.value })
+                  }
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Expected Delivery Date</Label>
+                <Input
+                  type="date"
+                  value={formData.deliveryDate}
+                  onChange={(e) =>
+                    setFormData({ ...formData, deliveryDate: e.target.value })
+                  }
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-8">
+              <div className="space-y-2">
+                <Label>Payment Terms</Label>
                 <Select
-                  onValueChange={handleVendorChange}
-                  value={formData.vendorId}
+                  value={formData.paymentTerms}
+                  onValueChange={(v) =>
+                    setFormData({ ...formData, paymentTerms: v })
+                  }
                 >
-                  <SelectTrigger className="flex-1" data-testid="select-vendor">
-                    <SelectValue placeholder="Select a Vendor" />
+                  <SelectTrigger>
+                    <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <div className="p-2">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Search className="h-4 w-4 text-gray-400" />
-                        <Input
-                          placeholder="Search vendors..."
-                          className="h-8"
-                          value={vendorSearchTerm}
-                          onChange={(e) => setVendorSearchTerm(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    {filteredVendors.map((vendor) => (
-                      <SelectItem key={vendor.id} value={vendor.id}>
-                        {vendor.displayName}
+                    {PAYMENT_TERMS.map((term) => (
+                      <SelectItem key={term} value={term}>
+                        {term}
                       </SelectItem>
                     ))}
-                    <div className="border-t mt-1 pt-1">
-                      <SelectItem
-                        value="__add_new_vendor__"
-                        onSelect={() => setLocation("/vendors/new")}
-                      >
-                        <div className="flex items-center gap-2 text-blue-600">
-                          <Plus className="h-4 w-4" /> Add New Vendor
-                        </div>
-                      </SelectItem>
-                    </div>
                   </SelectContent>
                 </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Shipment Preference</Label>
+                <Select
+                  value={formData.shipmentPreference}
+                  onValueChange={(v) =>
+                    setFormData({ ...formData, shipmentPreference: v })
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select preference" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {SHIPMENT_PREFERENCES.map((pref) => (
+                      <SelectItem key={pref} value={pref}>
+                        {pref}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-8">
+              <div className="space-y-2">
+                <Label>Subject</Label>
+                <Input
+                  placeholder="Let your vendor know what this purchase order is for"
+                  value={formData.subject}
+                  onChange={(e) =>
+                    setFormData({ ...formData, subject: e.target.value })
+                  }
+                />
+              </div>
+              <div className="flex items-center space-x-2 pt-8">
+                <Checkbox
+                  id="reverseCharge"
+                  checked={formData.reverseCharge}
+                  onCheckedChange={(checked) =>
+                    setFormData({ ...formData, reverseCharge: !!checked })
+                  }
+                />
+                <Label htmlFor="reverseCharge">
+                  This transaction is applicable for reverse charge
+                </Label>
+              </div>
+            </div>
+
+            {/* Items Table */}
+            <div className="border rounded-lg overflow-hidden border-slate-200">
+              <Table>
+                <TableHeader className="bg-slate-50">
+                  <TableRow>
+                    <TableHead className="w-[30%]">Item Details</TableHead>
+                    <TableHead className="w-[15%]">Account</TableHead>
+                    <TableHead className="w-[10%] text-right">Quantity</TableHead>
+                    <TableHead className="w-[15%] text-right">Rate</TableHead>
+                    <TableHead className="w-[15%] text-right">Tax</TableHead>
+                    <TableHead className="w-[15%] text-right">Amount</TableHead>
+                    <TableHead className="w-[50px]"></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {lineItems.map((item, index) => (
+                    <TableRow key={item.id}>
+                      <TableCell>
+                        <Select
+                          onValueChange={(val) => selectItem(item.id, val)}
+                          value={item.itemId}
+                        >
+                          <SelectTrigger className="border-0 shadow-none focus:ring-0 bg-transparent px-0">
+                            <SelectValue placeholder="Select or type to add item" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {items.map((i) => (
+                              <SelectItem key={i.id} value={i.id}>
+                                {i.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <Textarea
+                          placeholder="Description"
+                          className="mt-2 text-xs h-16 resize-none"
+                          value={item.description}
+                          onChange={(e) =>
+                            updateLineItem(item.id, "description", e.target.value)
+                          }
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <AccountSelectDropdown
+                          value={item.account}
+                          onValueChange={(v) =>
+                            updateLineItem(item.id, "account", v)
+                          }
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          type="number"
+                          className="text-right"
+                          value={item.quantity}
+                          onChange={(e) =>
+                            updateLineItem(
+                              item.id,
+                              "quantity",
+                              parseFloat(e.target.value) || 0,
+                            )
+                          }
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          type="number"
+                          className="text-right"
+                          value={item.rate}
+                          onChange={(e) =>
+                            updateLineItem(
+                              item.id,
+                              "rate",
+                              parseFloat(e.target.value) || 0,
+                            )
+                          }
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Select
+                          value={item.tax}
+                          onValueChange={(v) => updateLineItem(item.id, "tax", v)}
+                        >
+                          <SelectTrigger className="border-0 shadow-none focus:ring-0 bg-transparent px-0 text-right">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {TAX_OPTIONS.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </TableCell>
+                      <TableCell className="text-right font-medium">
+                        ₹
+                        {item.amount.toLocaleString("en-IN", {
+                          minimumFractionDigits: 2,
+                        })}
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removeLineItem(item.id)}
+                          className="text-slate-400 hover:text-red-600"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+              <div className="p-4 bg-slate-50/50 border-t border-slate-200">
                 <Button
                   variant="outline"
-                  size="icon"
-                  onClick={() => setLocation("/vendors/new")}
+                  size="sm"
+                  onClick={addLineItem}
+                  className="text-blue-600 border-blue-200 hover:bg-blue-50"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="h-4 w-4 mr-2" /> Add another line
                 </Button>
               </div>
             </div>
-          </div>
 
-          {/* Delivery Address Section */}
-          <div className="space-y-4">
-            <Label className="text-black">
-              Delivery Address <span className="text-red-500">*</span>
-            </Label>
-            <div className="flex items-center space-x-6">
-              <div className="flex items-center space-x-2">
-                <RadioGroup
-                  value={formData.deliveryAddressType}
-                  onValueChange={(v) =>
-                    setFormData({ ...formData, deliveryAddressType: v as any })
-                  }
-                  className="flex space-x-4"
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="organization" id="addr-org" />
-                    <Label htmlFor="addr-org" className="font-normal">
-                      Organization
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="customer" id="addr-cust" />
-                    <Label htmlFor="addr-cust" className="font-normal">
-                      Customer
-                    </Label>
-                  </div>
-                </RadioGroup>
-              </div>
-            </div>
-
-            {formData.deliveryAddressType === "organization" ? (
-              <div className="border rounded-md p-4 bg-slate-50/50 space-y-4 max-w-xl">
+            {/* Totals Section */}
+            <div className="grid grid-cols-2 gap-8 pt-8 border-t border-slate-100">
+              <div className="space-y-6">
                 <div className="space-y-2">
-                  <Label className="text-xs text-slate-500 uppercase font-semibold">
-                    Organization Name
-                  </Label>
-                  <Input
-                    value={formData.organizationDetails.name}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        organizationDetails: {
-                          ...formData.organizationDetails,
-                          name: e.target.value,
-                        },
-                      })
-                    }
-                    className="bg-white"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-xs text-slate-500 uppercase font-semibold">
-                    Organization Address
-                  </Label>
+                  <Label>Notes</Label>
                   <Textarea
-                    value={formData.organizationDetails.address}
+                    placeholder="Notes to vendor..."
+                    className="h-24"
+                    value={formData.notes}
+                    onChange={(e) =>
+                      setFormData({ ...formData, notes: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Terms & Conditions</Label>
+                  <Textarea
+                    placeholder="Terms and conditions..."
+                    className="h-24"
+                    value={formData.termsAndConditions}
                     onChange={(e) =>
                       setFormData({
                         ...formData,
-                        organizationDetails: {
-                          ...formData.organizationDetails,
-                          address: e.target.value,
-                        },
+                        termsAndConditions: e.target.value,
                       })
                     }
-                    className="bg-white min-h-[100px] resize-none"
                   />
                 </div>
               </div>
-            ) : (
-              <div className="space-y-4 max-w-xl">
-                <Popover
-                  open={isCustomerPopoverOpen}
-                  onOpenChange={setIsCustomerPopoverOpen}
-                >
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      aria-expanded={isCustomerPopoverOpen}
-                      className="w-full justify-between bg-white"
+
+              <div className="space-y-4 bg-slate-50/50 p-6 rounded-lg border border-slate-100">
+                <div className="flex justify-between text-sm">
+                  <span className="text-slate-600">Sub Total</span>
+                  <span className="font-medium">
+                    ₹
+                    {calculateSubTotal().toLocaleString("en-IN", {
+                      minimumFractionDigits: 2,
+                    })}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <span className="text-sm text-slate-600 shrink-0">
+                    Discount
+                  </span>
+                  <div className="flex-1 flex gap-2">
+                    <Input
+                      type="number"
+                      className="h-8"
+                      value={formData.discountValue}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          discountValue: parseFloat(e.target.value) || 0,
+                        })
+                      }
+                    />
+                    <Select
+                      value={formData.discountType}
+                      onValueChange={(v) =>
+                        setFormData({ ...formData, discountType: v })
+                      }
                     >
-                      {formData.selectedCustomer
-                        ? formData.selectedCustomer.displayName
-                        : "Select a Customer"}
-                      <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[400px] p-0" align="start">
-                    <Command>
-                      <CommandInput
-                        placeholder="Search customers..."
-                        value={formData.customerSearchQuery}
-                        onValueChange={(v) =>
-                          setFormData({ ...formData, customerSearchQuery: v })
-                        }
-                      />
-                      <CommandEmpty>
-                        <div className="p-4 text-center space-y-4">
-                          <p className="text-sm text-slate-500">
-                            No customers found.
-                          </p>
-                          <Button
-                            variant="default"
-                            className="w-full py-6 text-base"
-                            onClick={() => setLocation("/customers/new")}
-                          >
-                            <Plus className="mr-2 h-5 w-5" /> Create Customer
-                          </Button>
-                        </div>
-                      </CommandEmpty>
-                      <CommandGroup>
-                        {customers
-                          .filter((c) =>
-                            c.displayName
-                              .toLowerCase()
-                              .includes(
-                                formData.customerSearchQuery.toLowerCase(),
-                              ),
-                          )
-                          .map((customer) => (
-                            <CommandItem
-                              key={customer.id}
-                              value={customer.displayName}
-                              onSelect={() => {
-                                setFormData({
-                                  ...formData,
-                                  selectedCustomer: customer,
-                                });
-                                setIsCustomerPopoverOpen(false);
-                              }}
-                            >
-                              {customer.displayName}
-                            </CommandItem>
-                          ))}
-                      </CommandGroup>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
-              </div>
-            )}
-          </div>
+                      <SelectTrigger className="h-8 w-24">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="percent">%</SelectItem>
+                        <SelectItem value="amount">₹</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <span className="text-sm font-medium w-24 text-right">
+                    -₹
+                    {calculateDiscount().toLocaleString("en-IN", {
+                      minimumFractionDigits: 2,
+                    })}
+                  </span>
+                </div>
 
-          <div className="grid grid-cols-2 gap-8">
-            <div className="space-y-2">
-              <Label className="text-black">
-                Date <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                type="date"
-                value={formData.date}
-                onChange={(e) =>
-                  setFormData({ ...formData, date: e.target.value })
-                }
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Expected Delivery Date</Label>
-              <Input
-                type="date"
-                value={formData.deliveryDate}
-                onChange={(e) =>
-                  setFormData({ ...formData, deliveryDate: e.target.value })
-                }
-              />
-            </div>
-          </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-slate-600">Tax Total</span>
+                  <span className="font-medium">
+                    ₹
+                    {calculateTaxTotal().toLocaleString("en-IN", {
+                      minimumFractionDigits: 2,
+                    })}
+                  </span>
+                </div>
 
-          <div className="grid grid-cols-2 gap-8">
-            <div className="space-y-2">
-              <Label>Payment Terms</Label>
-              <Select
-                value={formData.paymentTerms}
-                onValueChange={(v) =>
-                  setFormData({ ...formData, paymentTerms: v })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {PAYMENT_TERMS.map((term) => (
-                    <SelectItem key={term} value={term}>
-                      {term}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label>Shipment Preference</Label>
-              <Select
-                value={formData.shipmentPreference}
-                onValueChange={(v) =>
-                  setFormData({ ...formData, shipmentPreference: v })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select preference" />
-                </SelectTrigger>
-                <SelectContent>
-                  {SHIPMENT_PREFERENCES.map((pref) => (
-                    <SelectItem key={pref} value={pref}>
-                      {pref}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-8">
-            <div className="space-y-2">
-              <Label>Subject</Label>
-              <Input
-                placeholder="Let your vendor know what this purchase order is for"
-                value={formData.subject}
-                onChange={(e) =>
-                  setFormData({ ...formData, subject: e.target.value })
-                }
-              />
-            </div>
-            <div className="flex items-center space-x-2 pt-8">
-              <Checkbox
-                id="reverseCharge"
-                checked={formData.reverseCharge}
-                onCheckedChange={(checked) =>
-                  setFormData({ ...formData, reverseCharge: !!checked })
-                }
-              />
-              <Label htmlFor="reverseCharge">
-                This transaction is applicable for reverse charge
-              </Label>
-            </div>
-          </div>
-
-          {/* Items Table */}
-          <div className="border rounded-lg overflow-hidden border-slate-200">
-            <Table>
-              <TableHeader className="bg-slate-50">
-                <TableRow>
-                  <TableHead className="w-[30%]">Item Details</TableHead>
-                  <TableHead className="w-[15%]">Account</TableHead>
-                  <TableHead className="w-[10%] text-right">Quantity</TableHead>
-                  <TableHead className="w-[15%] text-right">Rate</TableHead>
-                  <TableHead className="w-[15%] text-right">Tax</TableHead>
-                  <TableHead className="w-[15%] text-right">Amount</TableHead>
-                  <TableHead className="w-[50px]"></TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {lineItems.map((item, index) => (
-                  <TableRow key={item.id}>
-                    <TableCell>
-                      <Select
-                        onValueChange={(val) => selectItem(item.id, val)}
-                        value={item.itemId}
-                      >
-                        <SelectTrigger className="border-0 shadow-none focus:ring-0 bg-transparent px-0">
-                          <SelectValue placeholder="Select or type to add item" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {items.map((i) => (
-                            <SelectItem key={i.id} value={i.id}>
-                              {i.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Textarea
-                        placeholder="Description"
-                        className="mt-2 text-xs h-16 resize-none"
-                        value={item.description}
-                        onChange={(e) =>
-                          updateLineItem(item.id, "description", e.target.value)
-                        }
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <AccountSelectDropdown
-                        value={item.account}
-                        onValueChange={(v) =>
-                          updateLineItem(item.id, "account", v)
-                        }
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        type="number"
-                        className="text-right"
-                        value={item.quantity}
-                        onChange={(e) =>
-                          updateLineItem(
-                            item.id,
-                            "quantity",
-                            parseFloat(e.target.value) || 0,
-                          )
-                        }
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        type="number"
-                        className="text-right"
-                        value={item.rate}
-                        onChange={(e) =>
-                          updateLineItem(
-                            item.id,
-                            "rate",
-                            parseFloat(e.target.value) || 0,
-                          )
-                        }
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Select
-                        value={item.tax}
-                        onValueChange={(v) => updateLineItem(item.id, "tax", v)}
-                      >
-                        <SelectTrigger className="border-0 shadow-none focus:ring-0 bg-transparent px-0 text-right">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {TAX_OPTIONS.map((opt) => (
-                            <SelectItem key={opt.value} value={opt.value}>
-                              {opt.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </TableCell>
-                    <TableCell className="text-right font-medium">
-                      ₹
-                      {item.amount.toLocaleString("en-IN", {
-                        minimumFractionDigits: 2,
-                      })}
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => removeLineItem(item.id)}
-                        className="text-slate-400 hover:text-red-600"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-            <div className="p-4 bg-slate-50/50 border-t border-slate-200">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={addLineItem}
-                className="text-blue-600 border-blue-200 hover:bg-blue-50"
-              >
-                <Plus className="h-4 w-4 mr-2" /> Add another line
-              </Button>
-            </div>
-          </div>
-
-          {/* Totals Section */}
-          <div className="grid grid-cols-2 gap-8 pt-8 border-t border-slate-100">
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <Label>Notes</Label>
-                <Textarea
-                  placeholder="Notes to vendor..."
-                  className="h-24"
-                  value={formData.notes}
-                  onChange={(e) =>
-                    setFormData({ ...formData, notes: e.target.value })
-                  }
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Terms & Conditions</Label>
-                <Textarea
-                  placeholder="Terms and conditions..."
-                  className="h-24"
-                  value={formData.termsAndConditions}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      termsAndConditions: e.target.value,
-                    })
-                  }
-                />
-              </div>
-            </div>
-
-            <div className="space-y-4 bg-slate-50/50 p-6 rounded-lg border border-slate-100">
-              <div className="flex justify-between text-sm">
-                <span className="text-slate-600">Sub Total</span>
-                <span className="font-medium">
-                  ₹
-                  {calculateSubTotal().toLocaleString("en-IN", {
-                    minimumFractionDigits: 2,
-                  })}
-                </span>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <span className="text-sm text-slate-600 shrink-0">
-                  Discount
-                </span>
-                <div className="flex-1 flex gap-2">
+                <div className="flex items-center gap-4">
+                  <span className="text-sm text-slate-600 shrink-0">
+                    Adjustment
+                  </span>
                   <Input
                     type="number"
-                    className="h-8"
-                    value={formData.discountValue}
+                    className="h-8 flex-1"
+                    value={formData.adjustment}
                     onChange={(e) =>
                       setFormData({
                         ...formData,
-                        discountValue: parseFloat(e.target.value) || 0,
+                        adjustment: parseFloat(e.target.value) || 0,
                       })
                     }
                   />
-                  <Select
-                    value={formData.discountType}
-                    onValueChange={(v) =>
-                      setFormData({ ...formData, discountType: v })
-                    }
-                  >
-                    <SelectTrigger className="h-8 w-24">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="percent">%</SelectItem>
-                      <SelectItem value="amount">₹</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <span className="text-sm font-medium w-24 text-right">
+                    ₹
+                    {formData.adjustment.toLocaleString("en-IN", {
+                      minimumFractionDigits: 2,
+                    })}
+                  </span>
                 </div>
-                <span className="text-sm font-medium w-24 text-right">
-                  -₹
-                  {calculateDiscount().toLocaleString("en-IN", {
-                    minimumFractionDigits: 2,
-                  })}
-                </span>
-              </div>
 
-              <div className="flex justify-between text-sm">
-                <span className="text-slate-600">Tax Total</span>
-                <span className="font-medium">
-                  ₹
-                  {calculateTaxTotal().toLocaleString("en-IN", {
-                    minimumFractionDigits: 2,
-                  })}
-                </span>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <span className="text-sm text-slate-600 shrink-0">
-                  Adjustment
-                </span>
-                <Input
-                  type="number"
-                  className="h-8 flex-1"
-                  value={formData.adjustment}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      adjustment: parseFloat(e.target.value) || 0,
-                    })
-                  }
-                />
-                <span className="text-sm font-medium w-24 text-right">
-                  ₹
-                  {formData.adjustment.toLocaleString("en-IN", {
-                    minimumFractionDigits: 2,
-                  })}
-                </span>
-              </div>
-
-              <div className="flex justify-between items-center pt-4 border-t border-slate-200 mt-4">
-                <span className="text-lg font-semibold text-slate-900">
-                  Total (₹)
-                </span>
-                <span className="text-lg font-bold text-slate-900">
-                  ₹
-                  {calculateTotal().toLocaleString("en-IN", {
-                    minimumFractionDigits: 2,
-                  })}
-                </span>
+                <div className="flex justify-between items-center pt-4 border-t border-slate-200 mt-4">
+                  <span className="text-lg font-semibold text-slate-900">
+                    Total (₹)
+                  </span>
+                  <span className="text-lg font-bold text-slate-900">
+                    ₹
+                    {calculateTotal().toLocaleString("en-IN", {
+                      minimumFractionDigits: 2,
+                    })}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Footer Actions */}
-          <div className="flex justify-start gap-4 pt-8 border-t border-slate-100">
-            <Button
-              onClick={() => handleSubmit(false)}
-              className="bg-blue-600 hover:bg-blue-700 text-white min-w-[120px]"
-              disabled={loading}
-            >
-              Save as Issued
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => handleSubmit(true)}
-              disabled={loading}
-            >
-              Save as Draft
-            </Button>
-            <Button
-              variant="ghost"
-              onClick={() => setLocation("/purchase-orders")}
-              className="text-slate-600 hover:text-slate-900"
-            >
-              Cancel
-            </Button>
+            {/* Footer Actions */}
+            <div className="flex justify-start gap-4 pt-8 border-t border-slate-100">
+              <Button
+                onClick={() => handleSubmit(false)}
+                className="bg-blue-600 hover:bg-blue-700 text-white min-w-[120px]"
+                disabled={loading}
+              >
+                Save as Issued
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => handleSubmit(true)}
+                disabled={loading}
+              >
+                Save as Draft
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() => setLocation("/purchase-orders")}
+                className="text-slate-600 hover:text-slate-900"
+              >
+                Cancel
+              </Button>
+            </div>
           </div>
         </div>
       </div>

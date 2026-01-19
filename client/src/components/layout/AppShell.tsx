@@ -263,7 +263,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           </Button>
         </div>
 
-        <div className={cn("flex-1 min-h-0 overflow-hidden", (location.includes("/products/new") || (location.includes("/eway-bills") && !location.includes("/eway-bills/"))) ? "p-0" : "p-1 lg:p-2")}>
+        <div className={cn("flex-1 min-h-0 overflow-hidden", (location.includes("/products/new") || location.includes("/vendors/new") || location.includes("/vendors/") && location.includes("/edit") || (location.includes("/eway-bills") && !location.includes("/eway-bills/")) || location.includes("/purchase-orders/new") || (location.includes("/purchase-orders/") && location.includes("/edit")) || location.includes("/bills/new") || (location.includes("/bills/") && location.includes("/edit")) || location.includes("/payments-made/new") || (location.includes("/payments-made/") && location.includes("/edit")) || location.includes("/vendor-credits/new") || (location.includes("/vendor-credits/") && location.includes("/edit"))) ? "p-0" : "p-1 lg:p-2")}>
           {children}
         </div>
       </main>

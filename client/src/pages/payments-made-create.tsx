@@ -419,7 +419,7 @@ export default function PaymentsMadeCreate() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 overflow-y-auto invisible-scrollbar">
+    <div className="flex-1 flex flex-col bg-slate-50 h-screen">
       <div className="border-b border-slate-200 bg-white px-6 py-4 sticky top-0 z-10">
         <div className="flex items-center gap-4">
           <Button
@@ -434,125 +434,126 @@ export default function PaymentsMadeCreate() {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto p-6">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="h-auto p-0 bg-transparent gap-6 mb-6">
-            <TabsTrigger
-              value="bill_payment"
-              data-testid="tab-bill-payment"
-              className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:text-blue-600 data-[state=active]:bg-transparent data-[state=active]:shadow-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 px-2 py-3 bg-transparent hover:bg-transparent transition-none"
-            >
-              Bill Payment
-            </TabsTrigger>
-            <TabsTrigger
-              value="vendor_advance"
-              data-testid="tab-vendor-advance"
-              className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:text-blue-600 data-[state=active]:bg-transparent data-[state=active]:shadow-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 px-2 py-3 bg-transparent hover:bg-transparent transition-none"
-            >
-              Vendor Advance
-            </TabsTrigger>
-          </TabsList>
+      <div className="flex-1 overflow-y-auto invisible-scrollbar">
+        <div className="max-w-4xl mx-auto p-6 pb-24">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="h-auto p-0 bg-transparent gap-6 mb-6">
+              <TabsTrigger
+                value="bill_payment"
+                data-testid="tab-bill-payment"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:text-blue-600 data-[state=active]:bg-transparent data-[state=active]:shadow-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 px-2 py-3 bg-transparent hover:bg-transparent transition-none"
+              >
+                Bill Payment
+              </TabsTrigger>
+              <TabsTrigger
+                value="vendor_advance"
+                data-testid="tab-vendor-advance"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:text-blue-600 data-[state=active]:bg-transparent data-[state=active]:shadow-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 px-2 py-3 bg-transparent hover:bg-transparent transition-none"
+              >
+                Vendor Advance
+              </TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="bill_payment" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="md:col-span-2">
-                <Label className="text-black">Vendor Name
-                  <span className="text-red-600">*</span>
-                </Label>
-                <Select
-                  value={formData.vendorId}
-                  onValueChange={handleVendorChange}
-                >
-                  <SelectTrigger data-testid="select-vendor">
-                    <SelectValue placeholder="Select a Vendor" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {vendorsLoading ? (
-                      <SelectItem value="_loading" disabled>
-                        Loading...
-                      </SelectItem>
-                    ) : vendors.length === 0 ? (
-                      <SelectItem value="_empty" disabled>
-                        No vendors found
-                      </SelectItem>
-                    ) : (
-                      vendors.map((vendor) => (
-                        <SelectItem key={vendor.id} value={vendor.id}>
-                          {vendor.displayName}
+            <TabsContent value="bill_payment" className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="md:col-span-2">
+                  <Label className="text-black">Vendor Name
+                    <span className="text-red-600">*</span>
+                  </Label>
+                  <Select
+                    value={formData.vendorId}
+                    onValueChange={handleVendorChange}
+                  >
+                    <SelectTrigger data-testid="select-vendor">
+                      <SelectValue placeholder="Select a Vendor" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {vendorsLoading ? (
+                        <SelectItem value="_loading" disabled>
+                          Loading...
                         </SelectItem>
-                      ))
-                    )}
-                  </SelectContent>
-                </Select>
-                {formData.gstTreatment && (
-                  <p className="text-sm text-slate-500 mt-1">
-                    GST Treatment: {formData.gstTreatment}{" "}
-                    <Settings className="h-3 w-3 inline ml-1 cursor-pointer" />
-                  </p>
+                      ) : vendors.length === 0 ? (
+                        <SelectItem value="_empty" disabled>
+                          No vendors found
+                        </SelectItem>
+                      ) : (
+                        vendors.map((vendor) => (
+                          <SelectItem key={vendor.id} value={vendor.id}>
+                            {vendor.displayName}
+                          </SelectItem>
+                        ))
+                      )}
+                    </SelectContent>
+                  </Select>
+                  {formData.gstTreatment && (
+                    <p className="text-sm text-slate-500 mt-1">
+                      GST Treatment: {formData.gstTreatment}{" "}
+                      <Settings className="h-3 w-3 inline ml-1 cursor-pointer" />
+                    </p>
+                  )}
+                </div>
+
+                {formData.vendorId && (
+                  <div className="text-right">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="bg-blue-600 text-white hover:bg-blue-700"
+                      onClick={() =>
+                        setLocation(`/vendors/${formData.vendorId}/edit`)
+                      }
+                      data-testid="button-vendor-details"
+                    >
+                      {formData.vendorName}'s Details &gt;
+                    </Button>
+                  </div>
                 )}
               </div>
 
-              {formData.vendorId && (
-                <div className="text-right">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="bg-blue-600 text-white hover:bg-blue-700"
-                    onClick={() =>
-                      setLocation(`/vendors/${formData.vendorId}/edit`)
-                    }
-                    data-testid="button-vendor-details"
-                  >
-                    {formData.vendorName}'s Details &gt;
-                  </Button>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <Label className="text-black">Payment #
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      value={formData.paymentNumber}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          paymentNumber: e.target.value,
+                        }))
+                      }
+                      data-testid="input-payment-number"
+                    />
+                    <RefreshCw className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 cursor-pointer" />
+                  </div>
                 </div>
-              )}
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <Label className="text-black">Payment #
-                </Label>
-                <div className="relative">
-                  <Input
-                    value={formData.paymentNumber}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        paymentNumber: e.target.value,
-                      }))
-                    }
-                    data-testid="input-payment-number"
-                  />
-                  <RefreshCw className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 cursor-pointer" />
+                <div>
+                  <Label className="text-black">Payment Made
+                    <span className="text-red-600">*</span>
+                  </Label>
+                  <div className="flex">
+                    <span className="inline-flex items-center px-3 border border-r-0 rounded-l-md bg-slate-50 text-sm text-slate-500">
+                      INR
+                    </span>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      className="rounded-l-none"
+                      value={formData.paymentAmount}
+                      onChange={(e) => handlePaymentAmountChange(e.target.value)}
+                      placeholder="Enter amount to auto-allocate to bills"
+                      data-testid="input-payment-amount"
+                    />
+                  </div>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Enter amount to automatically allocate across unpaid bills (oldest first)
+                  </p>
                 </div>
               </div>
 
-              <div>
-                <Label className="text-black">Payment Made
-                  <span className="text-red-600">*</span>
-                </Label>
-                <div className="flex">
-                  <span className="inline-flex items-center px-3 border border-r-0 rounded-l-md bg-slate-50 text-sm text-slate-500">
-                    INR
-                  </span>
-                  <Input
-                    type="number"
-                    step="0.01"
-                    className="rounded-l-none"
-                    value={formData.paymentAmount}
-                    onChange={(e) => handlePaymentAmountChange(e.target.value)}
-                    placeholder="Enter amount to auto-allocate to bills"
-                    data-testid="input-payment-amount"
-                  />
-                </div>
-                <p className="text-xs text-slate-500 mt-1">
-                  Enter amount to automatically allocate across unpaid bills (oldest first)
-                </p>
-              </div>
-            </div>
-
-            {/* <Card className="bg-amber-50 border-amber-200">
+              {/* <Card className="bg-amber-50 border-amber-200">
               <CardContent className="flex items-center gap-3 py-3">
                 <span className="text-amber-600 text-lg">💡</span>
                 <p className="text-sm text-slate-700">
@@ -566,636 +567,637 @@ export default function PaymentsMadeCreate() {
               </CardContent>
             </Card>
  */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <Label className="text-black">Payment Date
-                  <span className="text-red-600">*</span>
-                </Label>
-                <Input
-                  type="date"
-                  value={formData.paymentDate}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      paymentDate: e.target.value,
-                    }))
-                  }
-                  data-testid="input-payment-date"
-                />
-              </div>
-
-              <div>
-                <Label>Payment Mode</Label>
-                <Select
-                  value={formData.paymentMode}
-                  onValueChange={(v) =>
-                    setFormData((prev) => ({ ...prev, paymentMode: v }))
-                  }
-                >
-                  <SelectTrigger data-testid="select-payment-mode">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {PAYMENT_MODES.map((mode) => (
-                      <SelectItem key={mode.value} value={mode.value}>
-                        {mode.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label className="text-black">Paid Through
-                  <span className="text-red-600">*</span>
-                </Label>
-                <Select
-                  value={formData.paidThrough}
-                  onValueChange={(v) =>
-                    setFormData((prev) => ({ ...prev, paidThrough: v }))
-                  }
-                >
-                  <SelectTrigger data-testid="select-paid-through">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {PAID_THROUGH_OPTIONS.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label>Reference#</Label>
-                <Input
-                  value={formData.reference}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      reference: e.target.value,
-                    }))
-                  }
-                  data-testid="input-reference"
-                />
-              </div>
-            </div>
-
-            {formData.vendorId && (
-              <div className="mt-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-medium text-slate-700">
-                    Bills for {formData.vendorName}
-                  </h3>
-                  <button
-                    className="text-sm text-blue-600 cursor-pointer"
-                    onClick={clearAppliedAmount}
-                  >
-                    Clear Applied Amount
-                  </button>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <Label className="text-black">Payment Date
+                    <span className="text-red-600">*</span>
+                  </Label>
+                  <Input
+                    type="date"
+                    value={formData.paymentDate}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        paymentDate: e.target.value,
+                      }))
+                    }
+                    data-testid="input-payment-date"
+                  />
                 </div>
 
-                <div className="border rounded-lg overflow-hidden">
-                  <table className="w-full text-sm">
-                    <thead className="bg-slate-50 border-b">
-                      <tr>
-                        <th className="px-4 py-3 text-left font-medium text-slate-600">
-                          Date
-                        </th>
-                        <th className="px-4 py-3 text-left font-medium text-slate-600">
-                          Bill#
-                        </th>
-                        <th className="px-4 py-3 text-left font-medium text-slate-600">
-                          PO#
-                        </th>
-                        <th className="px-4 py-3 text-right font-medium text-slate-600">
-                          Bill Amount
-                        </th>
-                        <th className="px-4 py-3 text-right font-medium text-slate-600">
-                          Amount Due
-                        </th>
-                        <th className="px-4 py-3 text-center font-medium text-slate-600">
-                          Payment Made on
-                        </th>
-                        <th className="px-4 py-3 text-right font-medium text-slate-600">
-                          Payment
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {billsLoading ? (
+                <div>
+                  <Label>Payment Mode</Label>
+                  <Select
+                    value={formData.paymentMode}
+                    onValueChange={(v) =>
+                      setFormData((prev) => ({ ...prev, paymentMode: v }))
+                    }
+                  >
+                    <SelectTrigger data-testid="select-payment-mode">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {PAYMENT_MODES.map((mode) => (
+                        <SelectItem key={mode.value} value={mode.value}>
+                          {mode.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label className="text-black">Paid Through
+                    <span className="text-red-600">*</span>
+                  </Label>
+                  <Select
+                    value={formData.paidThrough}
+                    onValueChange={(v) =>
+                      setFormData((prev) => ({ ...prev, paidThrough: v }))
+                    }
+                  >
+                    <SelectTrigger data-testid="select-paid-through">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {PAID_THROUGH_OPTIONS.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label>Reference#</Label>
+                  <Input
+                    value={formData.reference}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        reference: e.target.value,
+                      }))
+                    }
+                    data-testid="input-reference"
+                  />
+                </div>
+              </div>
+
+              {formData.vendorId && (
+                <div className="mt-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-medium text-slate-700">
+                      Bills for {formData.vendorName}
+                    </h3>
+                    <button
+                      className="text-sm text-blue-600 cursor-pointer"
+                      onClick={clearAppliedAmount}
+                    >
+                      Clear Applied Amount
+                    </button>
+                  </div>
+
+                  <div className="border rounded-lg overflow-hidden">
+                    <table className="w-full text-sm">
+                      <thead className="bg-slate-50 border-b">
                         <tr>
-                          <td
-                            colSpan={7}
-                            className="px-4 py-8 text-center text-slate-500"
-                          >
-                            Loading bills...
-                          </td>
+                          <th className="px-4 py-3 text-left font-medium text-slate-600">
+                            Date
+                          </th>
+                          <th className="px-4 py-3 text-left font-medium text-slate-600">
+                            Bill#
+                          </th>
+                          <th className="px-4 py-3 text-left font-medium text-slate-600">
+                            PO#
+                          </th>
+                          <th className="px-4 py-3 text-right font-medium text-slate-600">
+                            Bill Amount
+                          </th>
+                          <th className="px-4 py-3 text-right font-medium text-slate-600">
+                            Amount Due
+                          </th>
+                          <th className="px-4 py-3 text-center font-medium text-slate-600">
+                            Payment Made on
+                          </th>
+                          <th className="px-4 py-3 text-right font-medium text-slate-600">
+                            Payment
+                          </th>
                         </tr>
-                      ) : vendorBills.length === 0 ? (
-                        <tr>
-                          <td
-                            colSpan={7}
-                            className="px-4 py-8 text-center text-slate-500"
-                          >
-                            There are no unpaid bills for this vendor.
-                          </td>
-                        </tr>
-                      ) : (
-                        vendorBills.map((bill) => (
-                          <tr
-                            key={bill.id}
-                            className="border-b last:border-b-0"
-                          >
-                            <td className="px-4 py-3">{bill.date}</td>
-                            <td className="px-4 py-3 text-blue-600">
-                              {bill.billNumber}
-                            </td>
-                            <td className="px-4 py-3">
-                              {bill.purchaseOrderNumber || "-"}
-                            </td>
-                            <td className="px-4 py-3 text-right">
-                              {bill.total.toFixed(2)}
-                            </td>
-                            <td className="px-4 py-3 text-right">
-                              {bill.amountDue.toFixed(2)}
-                            </td>
-                            <td className="px-4 py-3 text-center">
-                              <Input
-                                type="date"
-                                className="h-8 w-32 mx-auto"
-                                value={
-                                  selectedBills[bill.id]?.paymentMadeOn || ""
-                                }
-                                onChange={(e) =>
-                                  setSelectedBills((prev) => ({
-                                    ...prev,
-                                    [bill.id]: {
-                                      ...prev[bill.id],
-                                      paymentMadeOn: e.target.value,
-                                    },
-                                  }))
-                                }
-                              />
-                            </td>
-                            <td className="px-4 py-3 text-right">
-                              <Input
-                                type="number"
-                                step="0.01"
-                                className="h-8 w-24 ml-auto text-right"
-                                placeholder="0.00"
-                                value={selectedBills[bill.id]?.payment || ""}
-                                onChange={(e) =>
-                                  handleBillPaymentChange(
-                                    bill.id,
-                                    parseFloat(e.target.value) || 0,
-                                  )
-                                }
-                              />
+                      </thead>
+                      <tbody>
+                        {billsLoading ? (
+                          <tr>
+                            <td
+                              colSpan={7}
+                              className="px-4 py-8 text-center text-slate-500"
+                            >
+                              Loading bills...
                             </td>
                           </tr>
+                        ) : vendorBills.length === 0 ? (
+                          <tr>
+                            <td
+                              colSpan={7}
+                              className="px-4 py-8 text-center text-slate-500"
+                            >
+                              There are no unpaid bills for this vendor.
+                            </td>
+                          </tr>
+                        ) : (
+                          vendorBills.map((bill) => (
+                            <tr
+                              key={bill.id}
+                              className="border-b last:border-b-0"
+                            >
+                              <td className="px-4 py-3">{bill.date}</td>
+                              <td className="px-4 py-3 text-blue-600">
+                                {bill.billNumber}
+                              </td>
+                              <td className="px-4 py-3">
+                                {bill.purchaseOrderNumber || "-"}
+                              </td>
+                              <td className="px-4 py-3 text-right">
+                                {bill.total.toFixed(2)}
+                              </td>
+                              <td className="px-4 py-3 text-right">
+                                {bill.amountDue.toFixed(2)}
+                              </td>
+                              <td className="px-4 py-3 text-center">
+                                <Input
+                                  type="date"
+                                  className="h-8 w-32 mx-auto"
+                                  value={
+                                    selectedBills[bill.id]?.paymentMadeOn || ""
+                                  }
+                                  onChange={(e) =>
+                                    setSelectedBills((prev) => ({
+                                      ...prev,
+                                      [bill.id]: {
+                                        ...prev[bill.id],
+                                        paymentMadeOn: e.target.value,
+                                      },
+                                    }))
+                                  }
+                                />
+                              </td>
+                              <td className="px-4 py-3 text-right">
+                                <Input
+                                  type="number"
+                                  step="0.01"
+                                  className="h-8 w-24 ml-auto text-right"
+                                  placeholder="0.00"
+                                  value={selectedBills[bill.id]?.payment || ""}
+                                  onChange={(e) =>
+                                    handleBillPaymentChange(
+                                      bill.id,
+                                      parseFloat(e.target.value) || 0,
+                                    )
+                                  }
+                                />
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div className="flex justify-end mt-4">
+                    <div className="text-right space-y-1">
+                      <p className="text-sm">
+                        <span className="text-slate-500">Total:</span>{" "}
+                        <span className="font-medium">
+                          {Object.values(selectedBills)
+                            .reduce((sum, b) => sum + (b.payment || 0), 0)
+                            .toFixed(2)}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+
+                  <Card className="bg-amber-50 border-amber-200 mt-4">
+                    <CardContent className="py-4">
+                      <div className="space-y-2 text-sm text-right">
+                        <div className="flex justify-between">
+                          <span className="text-slate-600">Amount Paid:</span>
+                          <span>{totals.amountPaid.toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-600">
+                            Amount used for Payments:
+                          </span>
+                          <span>{totals.usedForPayments.toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-600">Amount Refunded:</span>
+                          <span>{totals.amountRefunded.toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-amber-600 flex items-center gap-1">
+                            <AlertTriangle className="h-4 w-4" />
+                            Amount in Excess:
+                          </span>
+                          <span className="text-amber-600">
+                            ₹ {totals.amountInExcess.toFixed(2)}
+                          </span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              )}
+
+              <div className="mt-6">
+                <Label>Notes (Internal use. Not visible to vendor)</Label>
+                <Textarea
+                  rows={3}
+                  value={formData.notes}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, notes: e.target.value }))
+                  }
+                  className="resize-none"
+                  data-testid="input-notes"
+                />
+              </div>
+
+              <div className="mt-6">
+                <Label>Attachments</Label>
+                <div className="flex items-center gap-2 mt-2">
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <Upload className="h-4 w-4" />
+                    Upload File
+                  </Button>
+                </div>
+                <p className="text-xs text-slate-500 mt-2">
+                  You can upload a maximum of 5 files, 10MB each
+                </p>
+              </div>
+
+              <div className="mt-4 text-sm text-slate-500">
+                <strong>Additional Fields:</strong> Start adding custom fields for
+                your payments made by going to{" "}
+                <span className="text-blue-600">Settings</span> ➔{" "}
+                <span className="text-blue-600">Purchases</span> ➔{" "}
+                <span className="text-blue-600">Payments Made</span>.
+              </div>
+            </TabsContent>
+
+            <TabsContent value="vendor_advance" className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <Label className="text-black">Vendor Name
+                    <span className="text-red-600">*</span>
+                  </Label>
+                  <Select
+                    value={formData.vendorId}
+                    onValueChange={handleVendorChange}
+                  >
+                    <SelectTrigger data-testid="select-vendor-advance">
+                      <SelectValue placeholder="Select a Vendor" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {vendorsLoading ? (
+                        <SelectItem value="_loading" disabled>
+                          Loading...
+                        </SelectItem>
+                      ) : vendors.length === 0 ? (
+                        <SelectItem value="_empty" disabled>
+                          No vendors found
+                        </SelectItem>
+                      ) : (
+                        vendors.map((vendor) => (
+                          <SelectItem key={vendor.id} value={vendor.id}>
+                            {vendor.displayName}
+                          </SelectItem>
                         ))
                       )}
-                    </tbody>
-                  </table>
+                    </SelectContent>
+                  </Select>
+                  {formData.gstTreatment && (
+                    <p className="text-sm text-slate-500 mt-1">
+                      GST Treatment: {formData.gstTreatment}{" "}
+                      <Settings className="h-3 w-3 inline ml-1 cursor-pointer" />
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <Label className="text-black">Source of Supply
+                    <span className="text-red-600">*</span>
+                  </Label>
+                  <Select
+                    value={formData.sourceOfSupply}
+                    onValueChange={(v) =>
+                      setFormData((prev) => ({ ...prev, sourceOfSupply: v }))
+                    }
+                  >
+                    <SelectTrigger data-testid="select-source-supply">
+                      <SelectValue placeholder="Select State" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {INDIAN_STATES.map((state) => (
+                        <SelectItem
+                          key={state.code}
+                          value={`[${state.code}] - ${state.name}`}
+                        >
+                          [{state.code}] - {state.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
-                <div className="flex justify-end mt-4">
-                  <div className="text-right space-y-1">
-                    <p className="text-sm">
-                      <span className="text-slate-500">Total:</span>{" "}
-                      <span className="font-medium">
-                        {Object.values(selectedBills)
-                          .reduce((sum, b) => sum + (b.payment || 0), 0)
-                          .toFixed(2)}
-                      </span>
-                    </p>
+                <div>
+                  <Label className="text-black">Destination of Supply
+                    <span className="text-red-600">*</span>
+                  </Label>
+                  <Select
+                    value={formData.destinationOfSupply}
+                    onValueChange={(v) =>
+                      setFormData((prev) => ({ ...prev, destinationOfSupply: v }))
+                    }
+                  >
+                    <SelectTrigger data-testid="select-destination-supply">
+                      <SelectValue placeholder="Select State" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {INDIAN_STATES.map((state) => (
+                        <SelectItem
+                          key={state.code}
+                          value={`[${state.code}] - ${state.name}`}
+                        >
+                          [{state.code}] - {state.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <Label className="text-black">Payment #
+                    <span className="text-red-600">*</span>
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      value={formData.paymentNumber}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          paymentNumber: e.target.value,
+                        }))
+                      }
+                      data-testid="input-payment-number-advance"
+                    />
+                    <RefreshCw className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 cursor-pointer" />
                   </div>
                 </div>
 
-                <Card className="bg-amber-50 border-amber-200 mt-4">
-                  <CardContent className="py-4">
-                    <div className="space-y-2 text-sm text-right">
-                      <div className="flex justify-between">
-                        <span className="text-slate-600">Amount Paid:</span>
-                        <span>{totals.amountPaid.toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-slate-600">
-                          Amount used for Payments:
-                        </span>
-                        <span>{totals.usedForPayments.toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-slate-600">Amount Refunded:</span>
-                        <span>{totals.amountRefunded.toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-amber-600 flex items-center gap-1">
-                          <AlertTriangle className="h-4 w-4" />
-                          Amount in Excess:
-                        </span>
-                        <span className="text-amber-600">
-                          ₹ {totals.amountInExcess.toFixed(2)}
-                        </span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            )}
-
-            <div className="mt-6">
-              <Label>Notes (Internal use. Not visible to vendor)</Label>
-              <Textarea
-                rows={3}
-                value={formData.notes}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, notes: e.target.value }))
-                }
-                className="resize-none"
-                data-testid="input-notes"
-              />
-            </div>
-
-            <div className="mt-6">
-              <Label>Attachments</Label>
-              <div className="flex items-center gap-2 mt-2">
-                <Button variant="outline" size="sm" className="gap-2">
-                  <Upload className="h-4 w-4" />
-                  Upload File
-                </Button>
-              </div>
-              <p className="text-xs text-slate-500 mt-2">
-                You can upload a maximum of 5 files, 10MB each
-              </p>
-            </div>
-
-            <div className="mt-4 text-sm text-slate-500">
-              <strong>Additional Fields:</strong> Start adding custom fields for
-              your payments made by going to{" "}
-              <span className="text-blue-600">Settings</span> ➔{" "}
-              <span className="text-blue-600">Purchases</span> ➔{" "}
-              <span className="text-blue-600">Payments Made</span>.
-            </div>
-          </TabsContent>
-
-          <TabsContent value="vendor_advance" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <Label className="text-black">Vendor Name
-                  <span className="text-red-600">*</span>
-                </Label>
-                <Select
-                  value={formData.vendorId}
-                  onValueChange={handleVendorChange}
-                >
-                  <SelectTrigger data-testid="select-vendor-advance">
-                    <SelectValue placeholder="Select a Vendor" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {vendorsLoading ? (
-                      <SelectItem value="_loading" disabled>
-                        Loading...
-                      </SelectItem>
-                    ) : vendors.length === 0 ? (
-                      <SelectItem value="_empty" disabled>
-                        No vendors found
-                      </SelectItem>
-                    ) : (
-                      vendors.map((vendor) => (
-                        <SelectItem key={vendor.id} value={vendor.id}>
-                          {vendor.displayName}
-                        </SelectItem>
-                      ))
-                    )}
-                  </SelectContent>
-                </Select>
-                {formData.gstTreatment && (
-                  <p className="text-sm text-slate-500 mt-1">
-                    GST Treatment: {formData.gstTreatment}{" "}
-                    <Settings className="h-3 w-3 inline ml-1 cursor-pointer" />
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <Label className="text-black">Source of Supply
-                  <span className="text-red-600">*</span>
-                </Label>
-                <Select
-                  value={formData.sourceOfSupply}
-                  onValueChange={(v) =>
-                    setFormData((prev) => ({ ...prev, sourceOfSupply: v }))
-                  }
-                >
-                  <SelectTrigger data-testid="select-source-supply">
-                    <SelectValue placeholder="Select State" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {INDIAN_STATES.map((state) => (
-                      <SelectItem
-                        key={state.code}
-                        value={`[${state.code}] - ${state.name}`}
-                      >
-                        [{state.code}] - {state.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label className="text-black">Destination of Supply
-                  <span className="text-red-600">*</span>
-                </Label>
-                <Select
-                  value={formData.destinationOfSupply}
-                  onValueChange={(v) =>
-                    setFormData((prev) => ({ ...prev, destinationOfSupply: v }))
-                  }
-                >
-                  <SelectTrigger data-testid="select-destination-supply">
-                    <SelectValue placeholder="Select State" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {INDIAN_STATES.map((state) => (
-                      <SelectItem
-                        key={state.code}
-                        value={`[${state.code}] - ${state.name}`}
-                      >
-                        [{state.code}] - {state.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <Label className="text-black">Payment #
-                  <span className="text-red-600">*</span>
-                </Label>
-                <div className="relative">
-                  <Input
-                    value={formData.paymentNumber}
+                <div>
+                  <Label>Description of Supply</Label>
+                  <Textarea
+                    rows={2}
+                    placeholder="Will be displayed on the Payment Voucher"
+                    value={formData.descriptionOfSupply}
                     onChange={(e) =>
                       setFormData((prev) => ({
                         ...prev,
-                        paymentNumber: e.target.value,
+                        descriptionOfSupply: e.target.value,
                       }))
                     }
-                    data-testid="input-payment-number-advance"
+                    className="resize-none"
+                    data-testid="input-description-supply"
                   />
-                  <RefreshCw className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 cursor-pointer" />
                 </div>
               </div>
 
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <Label className="text-black">Payment Made
+                    <span className="text-red-600">*</span>
+                  </Label>
+                  <div className="flex">
+                    <span className="inline-flex items-center px-3 border border-r-0 rounded-l-md bg-slate-50 text-sm text-slate-500">
+                      INR
+                    </span>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      className="rounded-l-none"
+                      value={formData.paymentAmount}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          paymentAmount: e.target.value,
+                        }))
+                      }
+                      placeholder="Enter advance amount"
+                      data-testid="input-payment-amount-advance"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Label>Reverse Charge</Label>
+                <Checkbox
+                  checked={formData.reverseCharge}
+                  onCheckedChange={(checked) =>
+                    setFormData((prev) => ({ ...prev, reverseCharge: !!checked }))
+                  }
+                  data-testid="checkbox-reverse-charge"
+                />
+                <span className="text-sm text-slate-600">
+                  This transaction is applicable for reverse charge
+                </span>
+              </div>
+
               <div>
-                <Label>Description of Supply</Label>
+                <Label>TDS</Label>
+                <Select
+                  value={formData.tds}
+                  onValueChange={(v) =>
+                    setFormData((prev) => ({ ...prev, tds: v }))
+                  }
+                >
+                  <SelectTrigger data-testid="select-tds">
+                    <SelectValue placeholder="Select TDS" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {TDS_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <Label className="text-black">Payment Date
+                    <span className="text-red-600">*</span>
+                  </Label>
+                  <Input
+                    type="date"
+                    value={formData.paymentDate}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        paymentDate: e.target.value,
+                      }))
+                    }
+                    data-testid="input-payment-date-advance"
+                  />
+                </div>
+
+                <div>
+                  <Label>Payment Mode</Label>
+                  <Select
+                    value={formData.paymentMode}
+                    onValueChange={(v) =>
+                      setFormData((prev) => ({ ...prev, paymentMode: v }))
+                    }
+                  >
+                    <SelectTrigger data-testid="select-payment-mode-advance">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {PAYMENT_MODES.map((mode) => (
+                        <SelectItem key={mode.value} value={mode.value}>
+                          {mode.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label className="text-black">Paid Through
+                    <span className="text-red-600">*</span>
+                  </Label>
+                  <Select
+                    value={formData.paidThrough}
+                    onValueChange={(v) =>
+                      setFormData((prev) => ({ ...prev, paidThrough: v }))
+                    }
+                  >
+                    <SelectTrigger data-testid="select-paid-through-advance">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {PAID_THROUGH_OPTIONS.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label>Deposit To</Label>
+                  <Select
+                    value={formData.depositTo}
+                    onValueChange={(v) =>
+                      setFormData((prev) => ({ ...prev, depositTo: v }))
+                    }
+                  >
+                    <SelectTrigger data-testid="select-deposit-to">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {DEPOSIT_TO_OPTIONS.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label>Reference#</Label>
+                  <Input
+                    value={formData.reference}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        reference: e.target.value,
+                      }))
+                    }
+                    data-testid="input-reference-advance"
+                  />
+                </div>
+              </div>
+
+              <div className="mt-6">
+                <Label>Notes (Internal use. Not visible to vendor)</Label>
                 <Textarea
-                  rows={2}
-                  placeholder="Will be displayed on the Payment Voucher"
-                  value={formData.descriptionOfSupply}
+                  rows={3}
+                  value={formData.notes}
                   onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      descriptionOfSupply: e.target.value,
-                    }))
+                    setFormData((prev) => ({ ...prev, notes: e.target.value }))
                   }
                   className="resize-none"
-                  data-testid="input-description-supply"
+                  data-testid="input-notes-advance"
                 />
               </div>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <Label className="text-black">Payment Made
-                  <span className="text-red-600">*</span>
-                </Label>
-                <div className="flex">
-                  <span className="inline-flex items-center px-3 border border-r-0 rounded-l-md bg-slate-50 text-sm text-slate-500">
-                    INR
-                  </span>
-                  <Input
-                    type="number"
-                    step="0.01"
-                    className="rounded-l-none"
-                    value={formData.paymentAmount}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        paymentAmount: e.target.value,
-                      }))
-                    }
-                    placeholder="Enter advance amount"
-                    data-testid="input-payment-amount-advance"
-                  />
+              <div className="mt-6">
+                <Label>Attachments</Label>
+                <div className="flex items-center gap-2 mt-2">
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <Upload className="h-4 w-4" />
+                    Upload File
+                  </Button>
                 </div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Label>Reverse Charge</Label>
-              <Checkbox
-                checked={formData.reverseCharge}
-                onCheckedChange={(checked) =>
-                  setFormData((prev) => ({ ...prev, reverseCharge: !!checked }))
-                }
-                data-testid="checkbox-reverse-charge"
-              />
-              <span className="text-sm text-slate-600">
-                This transaction is applicable for reverse charge
-              </span>
-            </div>
-
-            <div>
-              <Label>TDS</Label>
-              <Select
-                value={formData.tds}
-                onValueChange={(v) =>
-                  setFormData((prev) => ({ ...prev, tds: v }))
-                }
-              >
-                <SelectTrigger data-testid="select-tds">
-                  <SelectValue placeholder="Select TDS" />
-                </SelectTrigger>
-                <SelectContent>
-                  {TDS_OPTIONS.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <Label className="text-black">Payment Date
-                  <span className="text-red-600">*</span>
-                </Label>
-                <Input
-                  type="date"
-                  value={formData.paymentDate}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      paymentDate: e.target.value,
-                    }))
-                  }
-                  data-testid="input-payment-date-advance"
-                />
+                <p className="text-xs text-slate-500 mt-2">
+                  You can upload a maximum of 5 files, 10MB each
+                </p>
               </div>
 
-              <div>
-                <Label>Payment Mode</Label>
-                <Select
-                  value={formData.paymentMode}
-                  onValueChange={(v) =>
-                    setFormData((prev) => ({ ...prev, paymentMode: v }))
-                  }
-                >
-                  <SelectTrigger data-testid="select-payment-mode-advance">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {PAYMENT_MODES.map((mode) => (
-                      <SelectItem key={mode.value} value={mode.value}>
-                        {mode.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              <div className="mt-4 text-sm text-slate-500">
+                <strong>Additional Fields:</strong> Start adding custom fields for
+                your payments made by going to{" "}
+                <span className="text-blue-600">Settings</span> ➔{" "}
+                <span className="text-blue-600">Purchases</span> ➔{" "}
+                <span className="text-blue-600">Payments Made</span>.
               </div>
+            </TabsContent>
+          </Tabs>
+        </div>
 
-              <div>
-                <Label className="text-black">Paid Through
-                  <span className="text-red-600">*</span>
-                </Label>
-                <Select
-                  value={formData.paidThrough}
-                  onValueChange={(v) =>
-                    setFormData((prev) => ({ ...prev, paidThrough: v }))
-                  }
-                >
-                  <SelectTrigger data-testid="select-paid-through-advance">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {PAID_THROUGH_OPTIONS.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label>Deposit To</Label>
-                <Select
-                  value={formData.depositTo}
-                  onValueChange={(v) =>
-                    setFormData((prev) => ({ ...prev, depositTo: v }))
-                  }
-                >
-                  <SelectTrigger data-testid="select-deposit-to">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {DEPOSIT_TO_OPTIONS.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label>Reference#</Label>
-                <Input
-                  value={formData.reference}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      reference: e.target.value,
-                    }))
-                  }
-                  data-testid="input-reference-advance"
-                />
-              </div>
-            </div>
-
-            <div className="mt-6">
-              <Label>Notes (Internal use. Not visible to vendor)</Label>
-              <Textarea
-                rows={3}
-                value={formData.notes}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, notes: e.target.value }))
-                }
-                className="resize-none"
-                data-testid="input-notes-advance"
-              />
-            </div>
-
-            <div className="mt-6">
-              <Label>Attachments</Label>
-              <div className="flex items-center gap-2 mt-2">
-                <Button variant="outline" size="sm" className="gap-2">
-                  <Upload className="h-4 w-4" />
-                  Upload File
-                </Button>
-              </div>
-              <p className="text-xs text-slate-500 mt-2">
-                You can upload a maximum of 5 files, 10MB each
-              </p>
-            </div>
-
-            <div className="mt-4 text-sm text-slate-500">
-              <strong>Additional Fields:</strong> Start adding custom fields for
-              your payments made by going to{" "}
-              <span className="text-blue-600">Settings</span> ➔{" "}
-              <span className="text-blue-600">Purchases</span> ➔{" "}
-              <span className="text-blue-600">Payments Made</span>.
-            </div>
-          </TabsContent>
-        </Tabs>
-      </div>
-
-      <div className="border-t border-slate-200 bg-white px-6 py-4 sticky bottom-0">
-        <div className="flex items-center gap-3">
-          <Button
-            variant="outline"
-            onClick={() => handleSubmit("DRAFT")}
-            disabled={saving}
-            data-testid="button-save-draft"
-          >
-            {saving ? "Saving..." : "Save as Draft"}
-          </Button>
-          <Button
-            className="bg-blue-600 hover:bg-blue-700"
-            onClick={() => handleSubmit("PAID")}
-            disabled={saving}
-            data-testid="button-save-paid"
-          >
-            {saving ? "Saving..." : "Save as Paid"}
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={() => setLocation("/payments-made")}
-            data-testid="button-cancel"
-          >
-            Cancel
-          </Button>
+        <div className="border-t border-slate-200 bg-white px-6 py-4 sticky bottom-0">
+          <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              onClick={() => handleSubmit("DRAFT")}
+              disabled={saving}
+              data-testid="button-save-draft"
+            >
+              {saving ? "Saving..." : "Save as Draft"}
+            </Button>
+            <Button
+              className="bg-blue-600 hover:bg-blue-700"
+              onClick={() => handleSubmit("PAID")}
+              disabled={saving}
+              data-testid="button-save-paid"
+            >
+              {saving ? "Saving..." : "Save as Paid"}
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => setLocation("/payments-made")}
+              data-testid="button-cancel"
+            >
+              Cancel
+            </Button>
+          </div>
         </div>
       </div>
     </div>

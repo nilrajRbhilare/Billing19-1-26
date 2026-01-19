@@ -528,13 +528,13 @@ export default function VendorEdit() {
   }
 
   return (
-    <div className="h-full flex flex-col bg-white">
+    <div className="flex-1 flex flex-col bg-white h-screen">
       <div className="border-b border-slate-200 px-6 py-4">
         <h1 className="text-2xl font-semibold text-slate-900">Edit Vendor</h1>
       </div>
 
-      <div className="flex-1 overflow-auto">
-        <div className="max-w-4xl mx-auto p-6 space-y-6">
+      <div className="flex-1 overflow-y-auto invisible-scrollbar">
+        <div className="max-w-4xl mx-auto p-6 space-y-6 pb-24">
           <div className="bg-blue-50 border border-blue-200 rounded-md px-4 py-3 flex items-center gap-2">
             <LinkIcon className="h-4 w-4 text-blue-600" />
             <span className="text-sm text-blue-800">
