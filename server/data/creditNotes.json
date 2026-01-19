@@ -1,6 +1,84 @@
 {
   "creditNotes": [
     {
+      "id": "1768822684207",
+      "creditNoteNumber": "CN-00007",
+      "referenceNumber": "",
+      "date": "2026-01-19",
+      "customerId": "2",
+      "customerName": "Ashtvinayak Education ",
+      "invoiceId": "",
+      "invoiceNumber": "",
+      "reason": "deficiency_in_services",
+      "salesperson": "",
+      "subject": "",
+      "billingAddress": {
+        "street": "",
+        "city": "Pune",
+        "state": "Maharashtra",
+        "country": "India",
+        "pincode": ""
+      },
+      "gstin": "",
+      "placeOfSupply": "",
+      "items": [
+        {
+          "id": "1",
+          "itemId": "1766056260714",
+          "name": "Rice (Copy)",
+          "description": "Bulk purchase of raw rice directly from vendors. High-grade grains with minimal impurities.",
+          "account": "sales",
+          "quantity": 1,
+          "rate": 60,
+          "discount": 0,
+          "discountType": "percentage",
+          "tax": 0,
+          "taxName": "none",
+          "amount": 60
+        },
+        {
+          "id": "1768822676977",
+          "itemId": "",
+          "name": "",
+          "description": "",
+          "account": "",
+          "quantity": 1,
+          "rate": 0,
+          "discount": 0,
+          "discountType": "percentage",
+          "tax": 0,
+          "taxName": "none",
+          "amount": 0
+        }
+      ],
+      "subTotal": 60,
+      "shippingCharges": 0,
+      "tdsType": "TDS",
+      "tdsAmount": 0,
+      "cgst": 0,
+      "sgst": 0,
+      "igst": 0,
+      "adjustment": 0,
+      "total": 60,
+      "creditsRemaining": 60,
+      "customerNotes": "",
+      "termsAndConditions": "",
+      "status": "OPEN",
+      "pdfTemplate": "Standard Template",
+      "createdAt": "2026-01-19T11:38:04.207Z",
+      "updatedAt": "2026-01-19T11:38:04.207Z",
+      "createdBy": "Admin User",
+      "activityLogs": [
+        {
+          "id": "1",
+          "timestamp": "2026-01-19T11:38:04.207Z",
+          "action": "created",
+          "description": "Credit Note created for ₹60",
+          "user": "Admin User"
+        }
+      ]
+    },
+    {
       "id": "1766999998247",
       "creditNoteNumber": "CN-00006",
       "referenceNumber": "",
@@ -377,5 +455,5 @@
       ]
     }
   ],
-  "nextCreditNoteNumber": 7
+  "nextCreditNoteNumber": 8
 }

@@ -20,7 +20,12 @@ import {
   Settings,
   Edit3,
   AlertCircle,
-  Receipt
+  Receipt,
+  ArrowLeft,
+  Package,
+  FileText,
+  ClipboardList,
+  Paperclip
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAppStore, type ContactPerson } from "@/lib/store";
@@ -156,6 +161,8 @@ export default function InvoiceCreate() {
   const [isTermsOpen, setIsTermsOpen] = useState(false);
   const [billingAddress, setBillingAddress] = useState<string>("");
   const [isEditingBillingAddress, setIsEditingBillingAddress] = useState(false);
+  const [notes, setNotes] = useState<string>("");
+  const [terms, setTerms] = useState<string>("");
 
   // Sync with bootstrap customer
   useEffect(() => {
@@ -235,7 +242,7 @@ export default function InvoiceCreate() {
     fetchCustomers();
     fetchProducts();
     // Handle clone parameter, customerId, and sales order conversion from URL
-    const params = new URLSearchParams(location.split('?')[1]);
+    const params = new URLSearchParams(window.location.search);
     const cloneFromId = params.get('cloneFrom');
     const urlCustomerId = params.get('customerId');
     const salesOrderIdParam = params.get('salesOrderId');
@@ -1432,7 +1439,7 @@ export default function InvoiceCreate() {
                         </div>
                         <input type="file" className="hidden" multiple onChange={(e) => {
                           const files = Array.from(e.target.files || []);
-                          setAttachments((prev) => [...prev, ...files.map(f => f.name)]);
+                          setAttachments((prev) => [...prev, ...files]);
                         }} />
                       </label>
                     </div>
@@ -1443,7 +1450,7 @@ export default function InvoiceCreate() {
                           <div key={index} className="flex items-center justify-between p-3 bg-background border border-border/60 rounded-lg group animate-in fade-in slide-in-from-top-1">
                             <div className="flex items-center gap-3 overflow-hidden">
                               <FileText className="h-4 w-4 text-primary shrink-0" />
-                              <span className="text-sm truncate">{file}</span>
+                              <span className="text-sm truncate">{file.name}</span>
                             </div>
                             <Button
                               variant="ghost"
@@ -1494,7 +1501,7 @@ export default function InvoiceCreate() {
                       <span className="text-muted-foreground">Adjustment</span>
                       <Popover>
                         <PopoverTrigger>
-                          <HelpCircleIcon className="h-3 w-3 text-muted-foreground" />
+                          <HelpCircle className="h-3 w-3 text-muted-foreground" />
                         </PopoverTrigger>
                         <PopoverContent className="text-xs w-60">
                           Add any positive or negative adjustment to the final total (e.g. Rounding off).
@@ -1715,25 +1722,4 @@ export default function InvoiceCreate() {
       />
     </div>
   );
-}
-
-function HelpCircleIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="12" cy="12" r="10" />
-      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-      <path d="M12 17h.01" />
-    </svg>
-  )
 }

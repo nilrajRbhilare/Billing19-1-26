@@ -1911,8 +1911,8 @@ export default function CustomersPage() {
     (customer.email && customer.email.toLowerCase().includes(searchTerm.toLowerCase()))
   ));
 
-  const { currentPage, totalPages, totalItems, itemsPerPage, paginatedItems: rawPaginatedItems, goToPage } = usePagination<CustomerListItem>(filteredCustomers, 10);
-  const paginatedItems = rawPaginatedItems as CustomerListItem[];
+  const { currentPage, totalPages, totalItems, itemsPerPage, paginatedItems: rawPaginatedItems, goToPage } = usePagination<CustomerListItem>(filteredCustomers || [], 10);
+  const paginatedCustomers = (rawPaginatedItems || []) as CustomerListItem[];
 
   const [importDropdownOpen, setImportDropdownOpen] = useState(false);
   const [exportDropdownOpen, setExportDropdownOpen] = useState(false);
@@ -2101,9 +2101,9 @@ export default function CustomersPage() {
                           <tr className="border-b border-slate-200 dark:border-slate-700">
                             <th className="px-4 py-3 text-left w-10">
                               <Checkbox
-                                checked={selectedCustomers.length === paginatedItems.length && paginatedItems.length > 0}
+                                checked={selectedCustomers.length === paginatedCustomers.length && paginatedCustomers.length > 0}
                                 onCheckedChange={(checked) => {
-                                  if (checked) setSelectedCustomers(paginatedItems.map(c => c.id));
+                                  if (checked) setSelectedCustomers(paginatedCustomers.map(c => c.id));
                                   else setSelectedCustomers([]);
                                 }}
                               />
@@ -2118,43 +2118,46 @@ export default function CustomersPage() {
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                          {paginatedItems.map((customer: CustomerListItem) => (
-                            <tr
-                              key={customer.id}
-                              className={`hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors ${selectedCustomer?.id === customer.id ? 'bg-blue-50 dark:bg-blue-900/20' : ''}`}
-                              onClick={() => handleCustomerClick(customer)}
-                            >
-                              <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
-                                <Checkbox
-                                  checked={selectedCustomers.includes(customer.id)}
-                                  onCheckedChange={() => toggleSelectCustomer(customer.id, {} as any)}
-                                />
-                              </td>
-                              <td className="px-4 py-3 text-blue-600 font-medium">{customer.name}</td>
-                              <td className="px-4 py-3 text-slate-500">{customer.companyName || '-'}</td>
-                              <td className="px-4 py-3 text-slate-500">{customer.email}</td>
-                              <td className="px-4 py-3 text-slate-500">{customer.phone || '-'}</td>
-                              <td className="px-4 py-3 text-right font-medium">{formatCurrency(customer.outstandingReceivables || 0)}</td>
-                              <td className="px-4 py-3 text-right font-medium text-green-600">{formatCurrency(customer.unusedCredits || 0)}</td>
-                              <td className="px-4 py-3 text-center" onClick={(e) => e.stopPropagation()}>
-                                <DropdownMenu>
-                                  <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" size="icon" className="h-8 w-8">
-                                      <MoreHorizontal className="h-4 w-4" />
-                                    </Button>
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent align="end">
-                                    <DropdownMenuItem onClick={() => setLocation(`/customers/${customer.id}/edit`)}>
-                                      <Pencil className="mr-2 h-4 w-4" /> Edit
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => { setCustomerToDelete(customer.id); setDeleteDialogOpen(true); }} className="text-red-600">
-                                      <Trash2 className="mr-2 h-4 w-4" /> Delete
-                                    </DropdownMenuItem>
-                                  </DropdownMenuContent>
-                                </DropdownMenu>
-                              </td>
-                            </tr>
-                          ))}
+                          {paginatedCustomers.map((item: CustomerListItem) => {
+                            const isSelected = false;
+                            return (
+                              <tr
+                                key={item.id}
+                                className={`hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors ${isSelected ? 'bg-blue-50 dark:bg-blue-900/20' : ''}`}
+                                onClick={() => handleCustomerClick(item)}
+                              >
+                                <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
+                                  <Checkbox
+                                    checked={selectedCustomers.includes(item.id)}
+                                    onCheckedChange={() => toggleSelectCustomer(item.id, {} as any)}
+                                  />
+                                </td>
+                                <td className="px-4 py-3 text-blue-600 font-medium">{item.name}</td>
+                                <td className="px-4 py-3 text-slate-500">{item.companyName || '-'}</td>
+                                <td className="px-4 py-3 text-slate-500">{item.email}</td>
+                                <td className="px-4 py-3 text-slate-500">{item.phone || '-'}</td>
+                                <td className="px-4 py-3 text-right font-medium">{formatCurrency(item.outstandingReceivables || 0)}</td>
+                                <td className="px-4 py-3 text-right font-medium text-green-600">{formatCurrency(item.unusedCredits || 0)}</td>
+                                <td className="px-4 py-3 text-center" onClick={(e) => e.stopPropagation()}>
+                                  <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                                        <MoreHorizontal className="h-4 w-4" />
+                                      </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end">
+                                      <DropdownMenuItem onClick={() => setLocation(`/customers/${item.id}/edit`)}>
+                                        <Pencil className="mr-2 h-4 w-4" /> Edit
+                                      </DropdownMenuItem>
+                                      <DropdownMenuItem onClick={() => { setCustomerToDelete(item.id); setDeleteDialogOpen(true); }} className="text-red-600">
+                                        <Trash2 className="mr-2 h-4 w-4" /> Delete
+                                      </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
+                                </td>
+                              </tr>
+                            );
+                          })}
                         </tbody>
                       </table>
                     </div>

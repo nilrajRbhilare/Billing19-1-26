@@ -83,7 +83,10 @@ function Router() {
         <Route path="/invoices/import" component={InvoiceImport} />
         <Route path="/invoices/:id/edit" component={InvoiceEdit} />
         <Route path="/estimates" component={QuotesPage} />
+        <Route path="/estimates/new" component={QuoteCreatePage} />
+        <Route path="/estimates/create" component={QuoteCreatePage} />
         <Route path="/quotes" component={QuotesPage} />
+        <Route path="/quotes/new" component={QuoteCreatePage} />
         <Route path="/quotes/create" component={QuoteCreatePage} />
         <Route path="/estimates/:id/edit" component={QuoteEditPage} />
         <Route path="/quotes/:id/edit" component={QuoteEditPage} />
