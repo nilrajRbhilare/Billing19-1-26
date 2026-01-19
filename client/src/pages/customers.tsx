@@ -1,5 +1,4 @@
-
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useLocation } from "wouter";
 import { useOrganization } from "@/context/OrganizationContext";
@@ -223,13 +222,13 @@ const formatCurrency = (amount: number) => {
 
 const RenderComment = ({ text }: { text: string }) => {
   // Simple markdown-style rendering for bold, italic, and underline
-  let parts: (string | JSX.Element)[] = [text];
+  let parts: (string | React.ReactElement)[] = [text];
 
   // Bold (**text** or __text__)
   const boldRegex = /\*\*(.*?)\*\*|__(.*?)__/g;
   parts = parts.flatMap((part) => {
     if (typeof part !== 'string') return [part];
-    const subParts: (string | JSX.Element)[] = [];
+    const subParts: (string | React.ReactElement)[] = [];
     let lastIndex = 0;
     let match;
     while ((match = boldRegex.exec(part)) !== null) {
@@ -249,7 +248,7 @@ const RenderComment = ({ text }: { text: string }) => {
   const italicRegex = /\*(.*?)\*|_(.*?)_/g;
   parts = parts.flatMap((part) => {
     if (typeof part !== 'string') return [part];
-    const subParts: (string | JSX.Element)[] = [];
+    const subParts: (string | React.ReactElement)[] = [];
     let lastIndex = 0;
     let match;
     while ((match = italicRegex.exec(part)) !== null) {
@@ -887,8 +886,8 @@ function CustomerDetailPanel({ customer, onClose, onEdit, onClone, onToggleStatu
         </div>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
-        <div className="flex items-center px-6 border-b border-slate-200 dark:border-slate-700">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0 overflow-hidden">
+        <div className="flex items-center px-6 border-b border-slate-200 dark:border-slate-700 flex-shrink-0">
           <TabsList className="h-auto p-0 bg-transparent gap-6">
             <TabsTrigger
               value="overview"
@@ -928,7 +927,7 @@ function CustomerDetailPanel({ customer, onClose, onEdit, onClone, onToggleStatu
           </TabsList>
         </div>
 
-        <TabsContent value="overview" className="flex-1 overflow-y-auto scrollbar-hide p-0 mt-0 max-h-[calc(100vh-250px)]">
+        <TabsContent value="overview" className="flex-1 overflow-y-auto scrollbar-hide p-0 mt-0">
           <div className="flex h-full">
             <div className="w-72 border-r border-slate-200 dark:border-slate-700 p-6 overflow-auto scrollbar-hide">
               <div className="space-y-6">
@@ -1144,7 +1143,7 @@ function CustomerDetailPanel({ customer, onClose, onEdit, onClone, onToggleStatu
           </div>
         </TabsContent>
 
-        <TabsContent value="comments" className="flex-1 overflow-y-auto scrollbar-hide p-6 mt-0 max-h-[calc(100vh-250px)]">
+        <TabsContent value="comments" className="flex-1 overflow-y-auto scrollbar-hide p-6 mt-0">
           <div className="w-full p-6 max-w-4xl mx-auto">
             <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm overflow-hidden mb-8 transition-all focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-500">
               <div className="flex items-center gap-1 p-2 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
@@ -1251,7 +1250,7 @@ function CustomerDetailPanel({ customer, onClose, onEdit, onClone, onToggleStatu
           </div>
         </TabsContent>
 
-        <TabsContent value="transactions" className="flex-1 overflow-y-auto scrollbar-hide p-6 mt-0 max-h-[calc(100vh-250px)]" data-transactions-scroll-container>
+        <TabsContent value="transactions" className="flex-1 overflow-y-auto scrollbar-hide p-6 mt-0" data-transactions-scroll-container>
           <div className="p-6">
             <div className="flex items-center justify-between mb-4">
               <DropdownMenu>
@@ -1307,15 +1306,15 @@ function CustomerDetailPanel({ customer, onClose, onEdit, onClone, onToggleStatu
                   onOpenChange={() => toggleSection(section.key)}
                 >
                   <div id={`section-${section.key}`} className="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
-                    <CollapsibleTrigger className="flex items-center justify-between w-full p-4 hover:bg-slate-50 dark:hover:bg-slate-800">
-                      <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-between w-full p-4 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                      <CollapsibleTrigger className="flex items-center gap-2 flex-1 text-left">
                         {expandedSections[section.key] ? (
                           <ChevronDown className="h-4 w-4" />
                         ) : (
                           <ChevronRight className="h-4 w-4" />
                         )}
                         <span className="font-medium">{section.label}</span>
-                      </div>
+                      </CollapsibleTrigger>
                       <div className="flex items-center gap-4">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
@@ -1352,11 +1351,11 @@ function CustomerDetailPanel({ customer, onClose, onEdit, onClone, onToggleStatu
                           }}
                           data-testid={`button-new-${section.key}`}
                         >
-                          <Plus className="h-3 w-3" />
+                          <Plus className="h-4 w-4" />
                           New
                         </Button>
                       </div>
-                    </CollapsibleTrigger>
+                    </div>
                     <CollapsibleContent>
                       <div className="border-t border-slate-200 dark:border-slate-700">
                         <table className="w-full text-sm">
@@ -1403,7 +1402,7 @@ function CustomerDetailPanel({ customer, onClose, onEdit, onClone, onToggleStatu
           </div>
         </TabsContent>
 
-        <TabsContent value="mails" className="flex-1 overflow-y-auto scrollbar-hide p-6 mt-0 max-h-[calc(100vh-250px)]">
+        <TabsContent value="mails" className="flex-1 overflow-y-auto scrollbar-hide p-6 mt-0">
           <div className="flex items-center justify-between mb-6">
             <h4 className="text-lg font-medium">System Mails</h4>
             <DropdownMenu>
@@ -1453,7 +1452,7 @@ function CustomerDetailPanel({ customer, onClose, onEdit, onClone, onToggleStatu
           )}
         </TabsContent>
 
-        <TabsContent value="statement" className="flex-1 overflow-hidden mt-0">
+        <TabsContent value="statement" className="flex-1 overflow-y-auto scrollbar-hide p-0 mt-0">
           <div className="h-full overflow-auto scrollbar-hide p-4 md:p-8 flex flex-col items-center bg-slate-100 dark:bg-slate-800">
             {/* Statement Options Bar */}
             <div className="w-full max-w-[210mm] mb-6 flex flex-wrap items-center justify-between gap-4">
@@ -1912,7 +1911,8 @@ export default function CustomersPage() {
     (customer.email && customer.email.toLowerCase().includes(searchTerm.toLowerCase()))
   ));
 
-  const { currentPage, totalPages, totalItems, itemsPerPage, paginatedItems, goToPage } = usePagination(filteredCustomers, 10);
+  const { currentPage, totalPages, totalItems, itemsPerPage, paginatedItems: rawPaginatedItems, goToPage } = usePagination<CustomerListItem>(filteredCustomers, 10);
+  const paginatedItems = rawPaginatedItems as CustomerListItem[];
 
   const [importDropdownOpen, setImportDropdownOpen] = useState(false);
   const [exportDropdownOpen, setExportDropdownOpen] = useState(false);
@@ -2118,7 +2118,7 @@ export default function CustomersPage() {
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                          {paginatedItems.map((customer) => (
+                          {paginatedItems.map((customer: CustomerListItem) => (
                             <tr
                               key={customer.id}
                               className={`hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors ${selectedCustomer?.id === customer.id ? 'bg-blue-50 dark:bg-blue-900/20' : ''}`}
